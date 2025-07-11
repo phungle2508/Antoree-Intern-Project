@@ -6,7 +6,7 @@ import CourseFilters, { FilterState } from '../components/courses/CourseFilters'
 import courses, { Course } from '../data/courses';
 import categoriesInit from '../data/category';
 
-const COURSES_PER_PAGE = 8;
+const COURSES_PER_PAGE = 6;
 
 const CourseCatalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();

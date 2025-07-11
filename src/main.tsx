@@ -4,6 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
 import './index.css';
 import { ToastContainer } from 'react-toastify';
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Router>
@@ -22,5 +23,6 @@ createRoot(document.getElementById('root')!).render(
       theme="light"
       className="mt-16"
     />
+ 
   </StrictMode>
 );

@@ -512,7 +512,7 @@ const VideoLecture = () => {
               )}
               <button
                 onClick={() => setShowCompletionModal(false)}
-                className="btn btn-outline"
+                className="btn bg-indigo-100 text-indigo-800 hover:bg-indigo-200 "
               >
                 Stay on This Lecture
               </button>

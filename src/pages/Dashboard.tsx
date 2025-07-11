@@ -3,44 +3,47 @@ import { Link } from 'react-router-dom';
 import { Bell, ArrowRight, BookOpen, Search, Heart, ShoppingCart, HistoryIcon } from 'lucide-react';
 import CourseProgress from '../components/dashboard/CourseProgress';
 import { getUserDataFromCookie } from '../services/history';
-import courses from '../data/courses';
+import courses, { Course } from '../data/courses';
 import { useTheme } from '../context/ThemeContext';
 import { getWishlist, getCart, CartItem } from '../services/cookie';
 import Cart from '../components/dashboard/Cart';
 import Wishlist from '../components/dashboard/Wishlist';
 import { UserData } from '../data';
+import { getRecommendedCourses } from '../services/recomment';
+
 const Dashboard = () => {
   const { theme, toggleTheme } = useTheme();
 
   // State for cookie s
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [recommendCourses, setRecommendCourses] = useState<Course[]>([]);
   const [userData, setUserData] = useState<UserData | null>(getUserDataFromCookie());
 
   // Function to update s from cookies
   const updateFromCookie = () => {
     setWishlist(getWishlist() || []);
     setCart(getCart() || []);
-
     setUserData(getUserDataFromCookie() || null);
 
-
   };
-
   // Scroll to top and update title when component mounts
   useEffect(() => {
-    console.log(userData);
-
     window.scrollTo(0, 0);
     document.title = 'Dashboard | Saket LearnHub';
     updateFromCookie();
-
     // Poll for cookie changes every 500ms
     const interval = setInterval(updateFromCookie, 500);
-
     return () => clearInterval(interval);
   }, []);
-
+  useEffect(() => {
+    const fetchRecommendedCourses = async () => {
+      const courses = await getRecommendedCourses();
+      setRecommendCourses(courses);
+      console.log(courses);
+    };
+    fetchRecommendedCourses();
+  }, []);
   const enrolledCourses = courses.filter(course =>
     userData?.enrolledCourses.includes(course.id)
   );
@@ -223,9 +226,7 @@ const Dashboard = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {courses
-                .filter(course => !userData?.enrolledCourses.includes(course.id))
-                .slice(0, 3)
+              {recommendCourses
                 .map(course => (
                   <div key={course.id} className="card group">
                     <div className="relative overflow-hidden">
@@ -251,7 +252,9 @@ const Dashboard = () => {
                       </p>
                       <div className="flex justify-between items-center">
                         <div className="font-bold text-gray-900 dark:text-white">
-                          ${course.price?.toFixed(2)}
+                            {typeof course.price === 'number' && course.price > 0
+                            ? `$${course.price.toFixed(2)}`
+                            : 'Free'}
                         </div>
                         <Link
                           to={`/courses/${course.id}`}

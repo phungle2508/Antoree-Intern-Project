@@ -1,12 +1,29 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, ArrowRight } from 'lucide-react';
-import { generateFakeDataAndFileContent } from '../../services/autoFakeData';
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/courses?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      navigate('/courses');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <div className="relative min-h-screen">
       <div className="absolute inset-0 z-0">
@@ -36,8 +53,12 @@ const HeroSection = () => {
             <input
               type="text"
               placeholder="What do you want to learn today?"
-              className="flex-1 px-4 py-2 focus:outline-none bg-transparent dark:text-white" />
-            <button onClick={() => console.log(generateFakeDataAndFileContent(50, 10))} className="btn bg-orange-600 hover:bg-orange-700 text-white ml-2">
+              className="flex-1 px-4 py-2 focus:outline-none bg-transparent dark:text-white"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={handleKeyPress}
+            />
+            <button onClick={handleSearch} className="btn bg-orange-600 hover:bg-orange-700 text-white ml-2">
               Search
             </button>
           </div>

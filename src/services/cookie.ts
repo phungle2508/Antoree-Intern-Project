@@ -76,7 +76,6 @@ export function removeCartItem(itemId: string): void {
     toast.error('Error removing item from cart');
   }
 }
-
 export function updateCartItemQuantity(itemId: string, quantity: number): void {
   try {
     const cart = getCart() || [];
@@ -97,7 +96,10 @@ export function updateCartItemQuantity(itemId: string, quantity: number): void {
     toast.error('Error updating item quantity in cart');
   }
 }
-
+export function getCartItemIds(): string[] {
+  const cart = getCart();
+  return cart ? cart.map(item => item.id) : [];
+}
 // Wishlist
 export function setWishlist(wishlist: string[]) {
   setCookie('wishlist', JSON.stringify(wishlist));

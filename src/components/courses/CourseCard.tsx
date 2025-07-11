@@ -2,8 +2,6 @@ import { Star, Users, Clock } from 'lucide-react';
 import { Course } from '../../data/courses';
 import { useState } from 'react';
 import CourseDetail from '../../pages/CourseDetail';
-import { appendWishlist } from '../../services/cookie';
-import { updateProgressOfUserData } from '../../services/history';
 
 interface CourseCardProps {
   course: Course;
@@ -100,17 +98,11 @@ const CourseCard = ({ course, size = 'medium' }: CourseCardProps) => {
           <div className="font-bold text-gray-900 dark:text-white">
             {course.price ? `$${course.price.toFixed(2)}` : 'Free'}
           </div>
-          <button
-            className="btn bg-pink-500 hover:bg-pink-600 text-sm py-1.5 mr-2 ml-2"
-            onClick={() => { appendWishlist(course.id); }}
-          >
-            Wishlist
-          </button>
+
           <button
             className="btn bg-indigo-600 hover:bg-indigo-700 text-sm py-1.5"
             onClick={() => {
               setShowModal(true);
-              updateProgressOfUserData(course.id)
             }} >
             View Course
           </button>

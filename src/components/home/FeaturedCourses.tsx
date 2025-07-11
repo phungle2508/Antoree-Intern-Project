@@ -4,7 +4,6 @@ import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import courses from '../../data/courses';
 import { Course } from '../../data/courses';
 import CourseDetail from '../../pages/CourseDetail';
-import { updateProgressOfUserData } from '../../services/history';
 const FeaturedCourses = () => {
   const [visibleCourses, setVisibleCourses] = useState<Course[]>([]);
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -130,7 +129,7 @@ const FeaturedCourses = () => {
                         onClick={() => {
                           setSelectedCourseId(course.id);
                           setShowModal(true);
-                          updateProgressOfUserData(course.id);
+                          
                         }} >
                         View Course
 

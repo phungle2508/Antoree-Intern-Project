@@ -15,7 +15,8 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import courses, { Course, Section, Author, authors } from '../data/courses';
-import { appendCart } from '../services/cookie';
+import { appendCart, appendWishlist, getWishlist, removeWishlistItem } from '../services/cookie';
+import { updateProgressOfUserData } from '../services/history';
 
 interface CourseDetailProps {
   courseId?: string;
@@ -35,12 +36,13 @@ const CourseDetail = (props: CourseDetailProps) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'curriculum' | 'reviews'>('overview');
   const [addingToCart, setAddingToCart] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     const foundCourse = courses.find(c => c.id === courseId);
-
     if (foundCourse) {
+      updateProgressOfUserData(foundCourse?.id);
       setCourse(foundCourse);
       document.title = `${foundCourse.title} | Saket LearnHub`;
 
@@ -52,6 +54,8 @@ const CourseDetail = (props: CourseDetailProps) => {
       if (foundCourse.curriculum.length > 0) {
         setActiveSectionId(foundCourse.curriculum[0].id);
       }
+      const wishlist = getWishlist();
+      setIsInWishlist(wishlist ? wishlist.includes(foundCourse.id) : false);
     }
 
     setTimeout(() => {
@@ -92,6 +96,18 @@ const CourseDetail = (props: CourseDetailProps) => {
       }
       setAddingToCart(false);
     }, 800);
+  };
+
+  const handleWishlistToggle = () => {
+    if (course && course.id) {
+      if (isInWishlist) {
+        removeWishlistItem(course.id);
+        setIsInWishlist(false);
+      } else {
+        appendWishlist(course.id);
+        setIsInWishlist(true);
+      }
+    }
   };
 
   if (loading) {
@@ -238,10 +254,13 @@ const CourseDetail = (props: CourseDetailProps) => {
                     <div className="mb-4">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                          ${course.price?.toFixed(2)}
+                          {typeof course.price === 'number' && course.price > 0
+                            ? `$${course.price.toFixed(2)}`
+                            : 'Free'}
                         </span>
                         <span className="text-lg text-gray-500 line-through">
                           ${(course.price ? course.price * 1.4 : 0).toFixed(2)}
+
                         </span>
                       </div>
                       <p className="text-green-600 dark:text-green-400 font-medium">
@@ -306,10 +325,21 @@ const CourseDetail = (props: CourseDetailProps) => {
                     </div>
 
                     <div className="flex justify-center space-x-4 mt-6">
-                      <button className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                        <Heart size={18} className="mr-1" />
+                      <button
+                        className={`group flex items-center transition-colors duration-200 ${isInWishlist
+                          ? 'text-pink-600 dark:text-pink-400'
+                          : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                          }`}
+                        onClick={handleWishlistToggle}
+                      >
+                        <Heart
+                          size={18}
+                          className={`mr-1 transition-colors duration-200 
+                        ${isInWishlist ? 'fill-current text-pink-500' : 'text-gray-400 group-hover:text-pink-500'}`}
+                        />
                         Wishlist
                       </button>
+
                       <button className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
                         <Share2 size={18} className="mr-1" />
                         Share

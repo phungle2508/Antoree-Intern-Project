@@ -38,7 +38,10 @@ export function getUserDataFromCookie() {
     return userData; // Return default user data if cookie is not set or invalid
 
 }
-
+export function getEnrolledCoursesID(): string[] {
+    const userData = getUserDataFromCookie();
+    return userData.enrolledCourses;
+}
 export function updateFinishProgressOfUserData(courseId: string, completedLectures: string) {
     const userData = getUserDataFromCookie();
     const progressIndex = userData.progress.findIndex((p: Progress) => p.courseId === courseId);

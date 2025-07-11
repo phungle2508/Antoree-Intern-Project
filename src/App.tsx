@@ -11,8 +11,13 @@ import Dashboard from './pages/Dashboard';
 import VideoLecture from './pages/VideoLecture';
 import Quiz from './pages/Quiz';
 import NotFound from './pages/NotFound';
+import { MessageCircle } from 'lucide-react';
+import ModalChat from './modal/ModalChat';
+import ModalNote from './modal/ModalNote';
+
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [chatOpen, setChatOpen] = useState(false);
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -46,8 +51,19 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
+      {/* Floating Icon Button with Tailwind and Lucide */}
+      <button
+        className="fixed bottom-8 right-8 z-50 rounded-full w-14 h-14 bg-accent-500 text-white shadow-lg flex items-center justify-center hover:bg-accent-600 transition-colors"
+        aria-label="Open chat"
+        style={{ background: '#ffc680', color: '#222' }}
+        onClick={() => setChatOpen(true)}
+      >
+        <MessageCircle size={28} />
+      </button>
+      <ModalChat open={chatOpen} onClose={() => setChatOpen(false)} />
+      <ModalNote open={chatOpen}  />
     </ThemeProvider>
-    
   );
 }
+
 export default App;
