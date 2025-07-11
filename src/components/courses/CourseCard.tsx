@@ -108,18 +108,28 @@ const CourseCard = ({ course, size = 'medium' }: CourseCardProps) => {
           </button>
         </div>
       </div>
-      {/* Modal for CourseDetail */}
+      {/* Modal for CourseDetail - Responsive */}
       {
         showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div className="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg max-w-4xl w-full h-[90vh] overflow-y-auto p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-2 sm:p-4">
+            <div className="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg 
+                           w-full h-full max-h-full
+                           sm:w-full sm:max-w-2xl sm:h-[85vh] sm:max-h-[85vh]
+                           md:max-w-3xl md:h-[90vh] md:max-h-[90vh]
+                           lg:max-w-4xl lg:h-[90vh] lg:max-h-[90vh]
+                           xl:max-w-5xl
+                           overflow-hidden flex flex-col">
               <button
-                className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 dark:hover:text-white text-2xl"
+                className="absolute top-2 right-2 z-10 text-gray-500 hover:text-gray-800 dark:hover:text-white 
+                          text-xl sm:text-2xl bg-white dark:bg-gray-800 rounded-full w-8 h-8 sm:w-10 sm:h-10 
+                          flex items-center justify-center shadow-md hover:shadow-lg transition-all"
                 onClick={() => setShowModal(false)}
               >
                 ×
               </button>
-              <CourseDetail courseId={course.id} modalMode onClose={() => setShowModal(false)} />
+              <div className="flex-1 overflow-y-auto">
+                <CourseDetail courseId={course.id} modalMode onClose={() => setShowModal(false)} />
+              </div>
             </div>
           </div>
         )

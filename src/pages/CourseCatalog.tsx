@@ -132,6 +132,47 @@ const CourseCatalog = () => {
     currentPage * COURSES_PER_PAGE
   );
 
+  // Generate pagination numbers with ellipsis
+  const generatePaginationItems = () => {
+    const items = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      // Show all pages if total is small
+      for (let i = 1; i <= totalPages; i++) {
+        items.push(i);
+      }
+    } else {
+      // Always show first page
+      items.push(1);
+
+      if (currentPage > 3) {
+        items.push('...');
+      }
+
+      // Show pages around current page
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+
+      for (let i = start; i <= end; i++) {
+        if (!items.includes(i)) {
+          items.push(i);
+        }
+      }
+
+      if (currentPage < totalPages - 2) {
+        items.push('...');
+      }
+
+      // Always show last page
+      if (!items.includes(totalPages)) {
+        items.push(totalPages);
+      }
+    }
+
+    return items;
+  };
+
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen pt-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -180,19 +221,19 @@ const CourseCatalog = () => {
             </div>
           ) : filteredCourses.length > 0 ? (
             <>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Showing {paginatedCourses.length} of {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
+              <p className="text-gray-600 dark:text-gray-400 mb-6 text-center sm:text-left">
+              Showing {paginatedCourses.length} of {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {paginatedCourses.map(course => (
-                  <CourseCard key={course.id} course={course} />
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+              {paginatedCourses.map(course => (
+                <CourseCard key={course.id} course={course} />
+              ))}
               </div>
 
               {/* Pagination Controls */}
               {totalPages > 1 && (
-                <div className="flex justify-center mt-8 space-x-2">
+                <div className="flex flex-wrap justify-center mt-8 gap-2">
                   <button
                     className="btn"
                     disabled={currentPage === 1}
@@ -200,14 +241,20 @@ const CourseCatalog = () => {
                   >
                     Previous
                   </button>
-                  {Array.from({ length: totalPages }, (_, i) => (
-                    <button
-                      key={i + 1}
-                      className={`btn ${currentPage === i + 1 ? 'btn-primary' : ''}`}
-                      onClick={() => setCurrentPage(i + 1)}
-                    >
-                      {i + 1}
-                    </button>
+                  {generatePaginationItems().map((item, index) => (
+                    item === '...' ? (
+                      <span key={`ellipsis-${index}`} className="flex items-center px-3 py-2 text-gray-500">
+                        ...
+                      </span>
+                    ) : (
+                      <button
+                        key={item}
+                        className={`btn ${currentPage === item ? 'btn-primary' : ''}`}
+                        onClick={() => setCurrentPage(item as number)}
+                      >
+                        {item}
+                      </button>
+                    )
                   ))}
                   <button
                     className="btn"

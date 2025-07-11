@@ -53,12 +53,16 @@ function App() {
       </Routes>
       {/* Floating Icon Button with Tailwind and Lucide */}
       <button
-        className="fixed bottom-8 right-8 z-50 rounded-full w-14 h-14 bg-accent-500 text-white shadow-lg flex items-center justify-center hover:bg-accent-600 transition-colors"
+        className="fixed z-50 rounded-full shadow-lg flex items-center justify-center transition-colors
+          w-12 h-12 bottom-4 right-4
+          sm:w-14 sm:h-14 sm:bottom-6 sm:right-6
+          md:w-16 md:h-16 md:bottom-8 md:right-8
+          hover:scale-110 transform transition-transform duration-200"
         aria-label="Open chat"
         style={{ background: '#ffc680', color: '#222' }}
         onClick={() => setChatOpen(true)}
       >
-        <MessageCircle size={28} />
+        <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
       </button>
       <ModalChat open={chatOpen} onClose={() => setChatOpen(false)} />
       <ModalNote open={chatOpen}  />

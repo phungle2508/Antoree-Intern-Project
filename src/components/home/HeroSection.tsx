@@ -47,18 +47,25 @@ const HeroSection = () => {
             Access quality courses taught by industry experts. Develop new skills and advance your career with our engaging learning platform.
           </p>
           <div
-            className={`bg-white dark:bg-gray-800 rounded-lg p-2 flex items-center mb-8 shadow-lg transition-all duration-700 delay-500 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            className={`bg-white dark:bg-gray-800 rounded-lg p-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-0 mb-8 shadow-lg transition-all duration-700 delay-500 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
               }`}>
-            <Search className="text-orange-600 dark:text-amber-400 ml-2" size={20} />
-            <input
-              type="text"
-              placeholder="What do you want to learn today?"
-              className="flex-1 px-4 py-2 focus:outline-none bg-transparent dark:text-white"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={handleKeyPress}
-            />
-            <button onClick={handleSearch} className="btn bg-orange-600 hover:bg-orange-700 text-white ml-2">
+            <div className="flex items-center flex-1">
+              <Search className="text-orange-600 dark:text-amber-400 ml-2" size={20} />
+              <input
+                type="text"
+                placeholder="What do you want to learn today?"
+                className="flex-1 px-4 py-2 focus:outline-none bg-transparent dark:text-white
+             placeholder:text-ellipsis placeholder:overflow-hidden placeholder:whitespace-nowrap
+             placeholder:text-sm sm:placeholder:text-base md:placeholder:text-lg
+             placeholder:text-gray-400 dark:placeholder:text-gray-400"                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleKeyPress}
+              />
+            </div>
+            <button
+              onClick={handleSearch}
+              className="btn bg-orange-600 hover:bg-orange-700 text-white w-full sm:w-auto sm:ml-2 flex-shrink-0"
+            >
               Search
             </button>
           </div>

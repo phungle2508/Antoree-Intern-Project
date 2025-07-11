@@ -140,12 +140,12 @@ const CourseDetail = (props: CourseDetailProps) => {
   return (
     <div className={props.modalMode ? "bg-white dark:bg-gray-900 rounded-lg" : "bg-gray-50 dark:bg-gray-900 min-h-screen pt-16"}>
       {/* Course Header */}
-      <div className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className={`bg-gray-900 text-white ${props.modalMode ? 'py-6' : 'py-12'}`}>
+        <div className={`container mx-auto ${props.modalMode ? 'px-2' : 'px-4 sm:px-6 lg:px-8'}`}>
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row gap-8">
+            <div className={`flex flex-col ${props.modalMode ? 'gap-4' : 'md:flex-row gap-8'}`}>
               {/* Course Info */}
-              <div className="md:w-7/12">
+              <div className={props.modalMode ? 'w-full' : 'md:w-7/12'}>
                 {
                   props.modalMode && props.onClose ? (
                     <> <button onClick={props.onClose}
@@ -176,9 +176,9 @@ const CourseDetail = (props: CourseDetailProps) => {
                 {/* Link to this course */}
 
 
-                <h1 className="text-3xl md:text-4xl font-bold mb-4">{course.title}</h1>
+                <h1 className={`font-bold mb-4 ${props.modalMode ? 'text-xl md:text-2xl' : 'text-3xl md:text-4xl'}`}>{course.title}</h1>
 
-                <p className="text-lg text-gray-300 mb-6">
+                <p className={`text-gray-300 mb-6 ${props.modalMode ? 'text-base' : 'text-lg'}`}>
                   {course.description}
                 </p>
 
@@ -230,124 +230,126 @@ const CourseDetail = (props: CourseDetailProps) => {
               </div>
 
               {/* Course Card */}
-              <div className="md:w-5/12 md:max-w-md">
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-                  {/* Course Image */}
-                  <div className="relative">
-                    {/* Skeleton loader */}
-                    {!imageLoaded && (
-                      <div className="w-full h-48 bg-gray-200 dark:bg-gray-700 animate-pulse" />
-                    )}
-                    <img
-                      src={course.imageUrl}
-                      alt={course.title}
-                      className={`w-full h-48 object-cover ${!imageLoaded ? 'opacity-0' : 'opacity-100'}`}
-                      onLoad={() => setImageLoaded(true)}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40">
-                      <PlayCircle size={64} className="text-white opacity-80 hover:opacity-100 cursor-pointer transition-opacity" />
-                    </div>
-                  </div>
-
-                  {/* Card Content */}
-                  <div className="p-6">
-                    <div className="mb-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                          {typeof course.price === 'number' && course.price > 0
-                            ? `$${course.price.toFixed(2)}`
-                            : 'Free'}
-                        </span>
-                        <span className="text-lg text-gray-500 line-through">
-                          ${(course.price ? course.price * 1.4 : 0).toFixed(2)}
-
-                        </span>
+              {!props.modalMode && (
+                <div className="md:w-5/12 md:max-w-md">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                    {/* Course Image */}
+                    <div className="relative">
+                      {/* Skeleton loader */}
+                      {!imageLoaded && (
+                        <div className="w-full h-48 bg-gray-200 dark:bg-gray-700 animate-pulse" />
+                      )}
+                      <img
+                        src={course.imageUrl}
+                        alt={course.title}
+                        className={`w-full h-48 object-cover ${!imageLoaded ? 'opacity-0' : 'opacity-100'}`}
+                        onLoad={() => setImageLoaded(true)}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40">
+                        <PlayCircle size={64} className="text-white opacity-80 hover:opacity-100 cursor-pointer transition-opacity" />
                       </div>
-                      <p className="text-green-600 dark:text-green-400 font-medium">
-                        40% off! Sale ends in 2 days
+                    </div>
+
+                    {/* Card Content */}
+                    <div className="p-6">
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                            {typeof course.price === 'number' && course.price > 0
+                              ? `$${course.price.toFixed(2)}`
+                              : 'Free'}
+                          </span>
+                          <span className="text-lg text-gray-500 line-through">
+                            ${(course.price ? course.price * 1.4 : 0).toFixed(2)}
+
+                          </span>
+                        </div>
+                        <p className="text-green-600 dark:text-green-400 font-medium">
+                          40% off! Sale ends in 2 days
+                        </p>
+                      </div>
+
+                      <div className="space-y-3 mb-6">
+                        <button
+                          className="btn btn-primary w-full flex items-center justify-center min-h-[44px]"
+                          onClick={handleAddToCart}
+                          disabled={addingToCart}
+                        >
+                          {addingToCart ? (
+                            <>
+                              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                              Adding to Cart...
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingCart size={18} className="mr-2" />
+                              Add to Cart
+                            </>
+                          )}
+                        </button>
+
+                      </div>
+
+                      <p className="text-center text-gray-500 dark:text-gray-400 text-sm mb-6">
+                        30-Day Money-Back Guarantee
                       </p>
-                    </div>
 
-                    <div className="space-y-3 mb-6">
-                      <button
-                        className="btn btn-primary w-full flex items-center justify-center min-h-[44px]"
-                        onClick={handleAddToCart}
-                        disabled={addingToCart}
-                      >
-                        {addingToCart ? (
-                          <>
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                            Adding to Cart...
-                          </>
-                        ) : (
-                          <>
-                            <ShoppingCart size={18} className="mr-2" />
-                            Add to Cart
-                          </>
-                        )}
-                      </button>
+                      <div className="space-y-4">
+                        <h3 className="font-semibold text-gray-900 dark:text-white">This course includes:</h3>
 
-                    </div>
-
-                    <p className="text-center text-gray-500 dark:text-gray-400 text-sm mb-6">
-                      30-Day Money-Back Guarantee
-                    </p>
-
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-gray-900 dark:text-white">This course includes:</h3>
-
-                      <div className="space-y-3">
-                        <div className="flex items-start">
-                          <PlayCircle size={18} className="text-gray-700 dark:text-gray-300 mt-0.5 mr-3 flex-shrink-0" />
-                          <p className="text-gray-700 dark:text-gray-300">
-                            {getTotalLectures(course.curriculum)} lectures
-                          </p>
-                        </div>
-                        <div className="flex items-start">
-                          <Clock size={18} className="text-gray-700 dark:text-gray-300 mt-0.5 mr-3 flex-shrink-0" />
-                          <p className="text-gray-700 dark:text-gray-300">
-                            {getTotalDuration(course.curriculum)} total length
-                          </p>
-                        </div>
-                        <div className="flex items-start">
-                          <BookOpen size={18} className="text-gray-700 dark:text-gray-300 mt-0.5 mr-3 flex-shrink-0" />
-                          <p className="text-gray-700 dark:text-gray-300">
-                            {course.quizzes.length} quizzes
-                          </p>
-                        </div>
-                        <div className="flex items-start">
-                          <CheckCircle size={18} className="text-gray-700 dark:text-gray-300 mt-0.5 mr-3 flex-shrink-0" />
-                          <p className="text-gray-700 dark:text-gray-300">
-                            Certificate of completion
-                          </p>
+                        <div className="space-y-3">
+                          <div className="flex items-start">
+                            <PlayCircle size={18} className="text-gray-700 dark:text-gray-300 mt-0.5 mr-3 flex-shrink-0" />
+                            <p className="text-gray-700 dark:text-gray-300">
+                              {getTotalLectures(course.curriculum)} lectures
+                            </p>
+                          </div>
+                          <div className="flex items-start">
+                            <Clock size={18} className="text-gray-700 dark:text-gray-300 mt-0.5 mr-3 flex-shrink-0" />
+                            <p className="text-gray-700 dark:text-gray-300">
+                              {getTotalDuration(course.curriculum)} total length
+                            </p>
+                          </div>
+                          <div className="flex items-start">
+                            <BookOpen size={18} className="text-gray-700 dark:text-gray-300 mt-0.5 mr-3 flex-shrink-0" />
+                            <p className="text-gray-700 dark:text-gray-300">
+                              {course.quizzes.length} quizzes
+                            </p>
+                          </div>
+                          <div className="flex items-start">
+                            <CheckCircle size={18} className="text-gray-700 dark:text-gray-300 mt-0.5 mr-3 flex-shrink-0" />
+                            <p className="text-gray-700 dark:text-gray-300">
+                              Certificate of completion
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex justify-center space-x-4 mt-6">
-                      <button
-                        className={`group flex items-center transition-colors duration-200 ${isInWishlist
-                          ? 'text-pink-600 dark:text-pink-400'
-                          : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                          }`}
-                        onClick={handleWishlistToggle}
-                      >
-                        <Heart
-                          size={18}
-                          className={`mr-1 transition-colors duration-200 
+                      <div className="flex justify-center space-x-4 mt-6">
+                        <button
+                          className={`group flex items-center transition-colors duration-200 ${isInWishlist
+                            ? 'text-pink-600 dark:text-pink-400'
+                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                            }`}
+                          onClick={handleWishlistToggle}
+                        >
+                          <Heart
+                            size={18}
+                            className={`mr-1 transition-colors duration-200 
                         ${isInWishlist ? 'fill-current text-pink-500' : 'text-gray-400 group-hover:text-pink-500'}`}
-                        />
-                        Wishlist
-                      </button>
+                          />
+                          Wishlist
+                        </button>
 
-                      <button className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                        <Share2 size={18} className="mr-1" />
-                        Share
-                      </button>
+                        <button className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                          <Share2 size={18} className="mr-1" />
+                          Share
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -688,298 +690,276 @@ const CourseDetail = (props: CourseDetailProps) => {
         </div>
       )}
       {props.modalMode && (
-        <div className="px-2 py-4">
-          {/* Optionally hide some elements or adjust padding if modalMode */}
-          {/* Tab Content */}
+        <div className="px-2 py-4 max-h-[60vh] overflow-y-auto">
+          {/* Tabs - Mobile Responsive */}
+          <div className="border-b border-gray-200 dark:border-gray-700 mb-4">
+            <nav className="flex space-x-4 overflow-x-auto">
+              <button
+                onClick={() => setActiveTab('overview')}
+                className={`py-2 px-3 font-medium text-sm border-b-2 whitespace-nowrap ${activeTab === 'overview'
+                  ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                  }`}
+              >
+                Overview
+              </button>
+              <button
+                onClick={() => setActiveTab('curriculum')}
+                className={`py-2 px-3 font-medium text-sm border-b-2 whitespace-nowrap ${activeTab === 'curriculum'
+                  ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                  }`}
+              >
+                Curriculum
+              </button>
+              <button
+                onClick={() => setActiveTab('reviews')}
+                className={`py-2 px-3 font-medium text-sm border-b-2 whitespace-nowrap ${activeTab === 'reviews'
+                  ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                  }`}
+              >
+                Reviews
+              </button>
+            </nav>
+          </div>
+
+          {/* Tab Content - Responsive */}
           <div>
             {/* Overview Tab */}
             {activeTab === 'overview' && (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2">
-                  <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">About This Course</h2>
-                    <p className="text-gray-700 dark:text-gray-300 mb-6 whitespace-pre-line">
-                      {course.longDescription}
-                    </p>
+              <div className="space-y-4">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-3">About This Course</h2>
+                  <p className="text-gray-700 dark:text-gray-300 mb-4 text-sm whitespace-pre-line">
+                    {course.longDescription}
+                  </p>
 
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">What you'll learn</h3>
-                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
-                      {course.objectives.map((objective, index) => (
-                        <li key={index} className="flex items-start">
-                          <CheckCircle size={18} className="text-primary-600 dark:text-primary-400 mr-2 mt-0.5 flex-shrink-0" />
-                          <span className="text-gray-700 dark:text-gray-300">{objective}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">What you'll learn</h3>
+                  <ul className="grid grid-cols-1 gap-2 mb-4">
+                    {course.objectives.slice(0, 4).map((objective, index) => (
+                      <li key={index} className="flex items-start">
+                        <CheckCircle size={14} className="text-primary-600 dark:text-primary-400 mr-2 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-700 dark:text-gray-300 text-sm">{objective}</span>
+                      </li>
+                    ))}
+                    {course.objectives.length > 4 && (
+                      <li className="text-sm text-gray-500 dark:text-gray-400">
+                        + {course.objectives.length - 4} more objectives
+                      </li>
+                    )}
+                  </ul>
 
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">Requirements</h3>
-                    <ul className="space-y-2 mb-6">
-                      {course.requirements.map((requirement, index) => (
-                        <li key={index} className="flex items-start">
-                          <div className="w-1.5 h-1.5 rounded-full bg-gray-700 dark:bg-gray-300 mt-2 mr-2"></div>
-                          <span className="text-gray-700 dark:text-gray-300">{requirement}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {author && (
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Instructor</h2>
-                      <div className="flex items-start">
-                        <img
-                          src={author.avatarUrl}
-                          alt={author.name}
-                          className="w-16 h-16 rounded-full object-cover mr-4"
-                        />
-                        <div>
-                          <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{author.name}</h3>
-                          <p className="text-gray-600 dark:text-gray-400 mb-2">{author.role}</p>
-                          <p className="text-gray-700 dark:text-gray-300">{author.bio}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">Requirements</h3>
+                  <ul className="space-y-1">
+                    {course.requirements.slice(0, 3).map((requirement, index) => (
+                      <li key={index} className="flex items-start">
+                        <div className="w-1 h-1 rounded-full bg-gray-700 dark:bg-gray-300 mt-2 mr-2"></div>
+                        <span className="text-gray-700 dark:text-gray-300 text-sm">{requirement}</span>
+                      </li>
+                    ))}
+                    {course.requirements.length > 3 && (
+                      <li className="text-sm text-gray-500 dark:text-gray-400">
+                        + {course.requirements.length - 3} more requirements
+                      </li>
+                    )}
+                  </ul>
                 </div>
 
-                <div>
-                  <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 sticky top-24">
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Course Content</h3>
-                    <div className="flex items-center justify-between mb-4 text-sm text-gray-600 dark:text-gray-400">
-                      <span>{course.curriculum.length} sections</span>
-                      <span>{getTotalLectures(course.curriculum)} lectures</span>
-                      <span>{getTotalDuration(course.curriculum)} total</span>
+                {author && (
+                  <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-3">Instructor</h2>
+                    <div className="flex items-start">
+                      <img
+                        src={author.avatarUrl}
+                        alt={author.name}
+                        className="w-12 h-12 rounded-full object-cover mr-3"
+                      />
+                      <div>
+                        <h3 className="text-base font-semibold text-gray-900 dark:text-white">{author.name}</h3>
+                        <p className="text-gray-600 dark:text-gray-400 mb-1 text-sm">{author.role}</p>
+                        <p className="text-gray-700 dark:text-gray-300 text-sm line-clamp-3">{author.bio}</p>
+                      </div>
                     </div>
+                  </div>
+                )}
 
-                    <div className="mb-4">
-                      <Link to={`/lecture/${course.id}/${course.curriculum[0].lectures[0].id}`} className="btn btn-primary w-full">
-                        Preview Course
-                      </Link>
-                    </div>
-
-                    <div className="space-y-3">
-                      {course.curriculum.slice(0, 3).map((section) => (
-                        <div key={section.id} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-                          <button
-                            onClick={() => toggleSection(section.id)}
-                            className="flex items-center justify-between w-full p-4 text-left font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700"
-                          >
-                            <span>{section.title}</span>
-                            <ChevronDown
-                              size={18}
-                              className={`transform transition-transform ${activeSectionId === section.id ? 'rotate-180' : ''}`}
-                            />
-                          </button>
-
-                          {activeSectionId === section.id && (
-                            <div className="p-4 space-y-2">
-                              {section.lectures.slice(0, 2).map((lecture) => (
-                                <div key={lecture.id} className="flex items-start">
-                                  <PlayCircle size={16} className="text-gray-600 dark:text-gray-400 mt-1 mr-2 flex-shrink-0" />
-                                  <div className="flex-1">
-                                    <p className="text-gray-800 dark:text-gray-200">{lecture.title}</p>
-                                    <div className="flex items-center text-sm">
-                                      <span className="text-gray-500 dark:text-gray-400">{lecture.duration}</span>
-                                      {lecture.isFree && (
-                                        <span className="ml-2 text-primary-600 dark:text-primary-400">Preview</span>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                              ))}
-
-                              {section.lectures.length > 2 && (
-                                <p className="text-sm text-gray-500 dark:text-gray-400 pt-2">
-                                  + {section.lectures.length - 2} more lectures
-                                </p>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-
-                      {course.curriculum.length > 3 && (
-                        <p className="text-sm text-gray-500 dark:text-gray-400 pt-2">
-                          + {course.curriculum.length - 3} more sections
-                        </p>
+                {/* Action Buttons in Modal */}
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+                  <div className="space-y-3">
+                    <button
+                      className="btn btn-primary w-full flex items-center justify-center min-h-[40px] text-sm"
+                      onClick={handleAddToCart}
+                      disabled={addingToCart}
+                    >
+                      {addingToCart ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                          Adding...
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingCart size={16} className="mr-2" />
+                          Add to Cart - {typeof course.price === 'number' && course.price > 0 ? `$${course.price.toFixed(2)}` : 'Free'}
+                        </>
                       )}
+                    </button>
+
+                    <div className="flex justify-center space-x-6">
+                      <button
+                        className={`group flex items-center transition-colors duration-200 text-sm ${isInWishlist
+                          ? 'text-pink-600 dark:text-pink-400'
+                          : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                          }`}
+                        onClick={handleWishlistToggle}
+                      >
+                        <Heart
+                          size={16}
+                          className={`mr-1 transition-colors duration-200 
+                        ${isInWishlist ? 'fill-current text-pink-500' : 'text-gray-400 group-hover:text-pink-500'}`}
+                        />
+                        Wishlist
+                      </button>
+
+                      <button className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">
+                        <Share2 size={16} className="mr-1" />
+                        Share
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Curriculum Tab */}
+            {/* Curriculum Tab - Responsive */}
             {activeTab === 'curriculum' && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Course Curriculum</h2>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+                <div className="mb-4">
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Course Curriculum</h2>
+                  <div className="text-xs text-gray-600 dark:text-gray-400">
                     <span>{course.curriculum.length} sections</span>
-                    <span className="mx-2">•</span>
+                    <span className="mx-1">•</span>
                     <span>{getTotalLectures(course.curriculum)} lectures</span>
-                    <span className="mx-2">•</span>
-                    <span>{getTotalDuration(course.curriculum)} total length</span>
+                    <span className="mx-1">•</span>
+                    <span>{getTotalDuration(course.curriculum)} total</span>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  {course.curriculum.map((section) => (
-                    <div key={section.id} className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                <div className="space-y-2">
+                  {course.curriculum.slice(0, 5).map((section) => (
+                    <div key={section.id} className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
                       <button
                         onClick={() => toggleSection(section.id)}
-                        className="flex items-center justify-between w-full p-4 text-left font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
+                        className="flex items-center justify-between w-full p-3 text-left font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm"
                       >
-                        <span>{section.title}</span>
-                        <div className="flex items-center">
-                          <span className="text-sm text-gray-500 dark:text-gray-400 mr-4">
-                            {section.lectures.length} lectures • {getTotalDuration([section])}
-                          </span>
-                          <ChevronDown
-                            size={18}
-                            className={`transform transition-transform ${activeSectionId === section.id ? 'rotate-180' : ''}`}
-                          />
-                        </div>
+                        <span className="truncate">{section.title}</span>
+                        <ChevronDown
+                          size={16}
+                          className={`transform transition-transform flex-shrink-0 ml-2 ${activeSectionId === section.id ? 'rotate-180' : ''}`}
+                        />
                       </button>
 
                       {activeSectionId === section.id && (
-                        <div className="divide-y divide-gray-200 dark:divide-gray-700">
-                          {section.lectures.map((lecture) => (
-                            <div key={lecture.id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800">
-                              <div className="flex items-start">
-                                <PlayCircle size={18} className="text-gray-600 dark:text-gray-400 mt-1 mr-3 flex-shrink-0" />
-                                <div className="flex-1">
-                                  <div className="flex items-center justify-between">
-                                    <Link
-                                      to={`/lecture/${course.id}/${lecture.id}`}
-                                      className="text-gray-800 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400"
-                                    >
-                                      {lecture.title}
-                                    </Link>
-                                    <div className="flex items-center">
-                                      {lecture.isFree && (
-                                        <span className="px-2 py-1 mr-3 text-xs font-medium rounded-full bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-300">
-                                          Preview
-                                        </span>
-                                      )}
-                                      <span className="text-sm text-gray-500 dark:text-gray-400">{lecture.duration}</span>
-                                    </div>
-                                  </div>
-                                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                    {lecture.description}
-                                  </p>
+                        <div className="p-3 space-y-2">
+                          {section.lectures.slice(0, 3).map((lecture) => (
+                            <div key={lecture.id} className="flex items-start">
+                              <PlayCircle size={14} className="text-gray-600 dark:text-gray-400 mt-0.5 mr-2 flex-shrink-0" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-gray-800 dark:text-gray-200 text-sm truncate">{lecture.title}</p>
+                                <div className="flex items-center text-xs">
+                                  <span className="text-gray-500 dark:text-gray-400">{lecture.duration}</span>
+                                  {lecture.isFree && (
+                                    <span className="ml-2 text-primary-600 dark:text-primary-400">Preview</span>
+                                  )}
                                 </div>
                               </div>
                             </div>
                           ))}
+
+                          {section.lectures.length > 3 && (
+                            <p className="text-xs text-gray-500 dark:text-gray-400 pt-1">
+                              + {section.lectures.length - 3} more lectures
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
                   ))}
+
+                  {course.curriculum.length > 5 && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 pt-2 text-center">
+                      + {course.curriculum.length - 5} more sections
+                    </p>
+                  )}
                 </div>
               </div>
             )}
 
-            {/* Reviews Tab */}
+            {/* Reviews Tab - Responsive */}
             {activeTab === 'reviews' && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <div className="flex flex-col md:flex-row gap-8 mb-8">
-                  <div className="md:w-1/3 flex flex-col items-center justify-center p-6 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <div className="text-5xl font-bold text-gray-900 dark:text-white mb-2">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+                <div className="mb-4">
+                  <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg mb-4">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                       {course.rating.toFixed(1)}
                     </div>
-                    <div className="flex mb-2">
+                    <div className="flex mb-1">
                       {Array(5).fill(0).map((_, i) => (
                         <Star
                           key={i}
-                          size={24}
+                          size={16}
                           className={`${i < Math.floor(course.rating) ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300 dark:text-gray-600'}`}
                         />
                       ))}
                     </div>
-                    <div className="text-gray-600 dark:text-gray-400">
-                      Course Rating • {course.reviewCount} Reviews
+                    <div className="text-gray-600 dark:text-gray-400 text-xs text-center">
+                      {course.reviewCount} Reviews
                     </div>
                   </div>
 
-                  <div className="md:w-2/3">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Student Reviews</h2>
-
-                    {course.reviews.length > 0 ? (
-                      <div className="space-y-6">
-                        {course.reviews.map((review) => (
-                          <div key={review.id} className="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-0">
-                            <div className="flex items-start">
-                              <img
-                                src={review.userAvatarUrl}
-                                alt={review.userName}
-                                className="w-10 h-10 rounded-full object-cover mr-4"
-                              />
-                              <div className="flex-1">
-                                <div className="flex items-center justify-between">
-                                  <h4 className="font-medium text-gray-900 dark:text-white">{review.userName}</h4>
-                                  <span className="text-sm text-gray-500 dark:text-gray-400">{review.date}</span>
-                                </div>
-                                <div className="flex my-1">
-                                  {Array(5).fill(0).map((_, i) => (
-                                    <Star
-                                      key={i}
-                                      size={16}
-                                      className={`${i < review.rating ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300 dark:text-gray-600'}`}
-                                    />
-                                  ))}
-                                </div>
-                                <p className="text-gray-700 dark:text-gray-300 mt-2">
-                                  {review.comment}
-                                </p>
+                  {course.reviews.length > 0 ? (
+                    <div className="space-y-4">
+                      <h3 className="text-base font-semibold text-gray-900 dark:text-white">Recent Reviews</h3>
+                      {course.reviews.slice(0, 3).map((review) => (
+                        <div key={review.id} className="border-b border-gray-200 dark:border-gray-700 pb-3 last:border-0">
+                          <div className="flex items-start">
+                            <img
+                              src={review.userAvatarUrl}
+                              alt={review.userName}
+                              className="w-8 h-8 rounded-full object-cover mr-3"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between mb-1">
+                                <h4 className="font-medium text-gray-900 dark:text-white text-sm truncate">{review.userName}</h4>
+                                <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">{review.date}</span>
                               </div>
+                              <div className="flex mb-1">
+                                {Array(5).fill(0).map((_, i) => (
+                                  <Star
+                                    key={i}
+                                    size={12}
+                                    className={`${i < review.rating ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300 dark:text-gray-600'}`}
+                                  />
+                                ))}
+                              </div>
+                              <p className="text-gray-700 dark:text-gray-300 text-sm line-clamp-3">
+                                {review.comment}
+                              </p>
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-gray-600 dark:text-gray-400">
-                        This course doesn't have any reviews yet.
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Write a Review</h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">
-                    Share your thoughts about this course with other students.
-                  </p>
-
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Rating
-                      </label>
-                      <div className="flex">
-                        {Array(5).fill(0).map((_, i) => (
-                          <Star
-                            key={i}
-                            size={24}
-                            className="text-gray-300 dark:text-gray-600 hover:text-yellow-500 hover:fill-yellow-500 cursor-pointer"
-                          />
-                        ))}
-                      </div>
+                        </div>
+                      ))}
+                      {course.reviews.length > 3 && (
+                        <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                          + {course.reviews.length - 3} more reviews
+                        </p>
+                      )}
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Review
-                      </label>
-                      <textarea
-                        rows={4}
-                        className="input"
-                        placeholder="Write your review here..."
-                      ></textarea>
-                    </div>
-                    <button className="btn btn-primary">
-                      Submit Review
-                    </button>
-                  </div>
+                  ) : (
+                    <p className="text-gray-600 dark:text-gray-400 text-sm text-center py-4">
+                      No reviews yet.
+                    </p>
+                  )}
                 </div>
               </div>
             )}
