@@ -22,36 +22,35 @@ const ProgressChart = ({ data, title }: ProgressChartProps) => {
     ctx.scale(dpr, dpr);
     canvas.style.width = `${rect.width}px`;
     canvas.style.height = `${rect.height}px`;
-    
+
     const padding = 40;
     const chartWidth = rect.width - padding * 2;
     const chartHeight = rect.height - padding * 2;
     const barWidth = chartWidth / data.labels.length - 10;
-    const maxValue = Math.max(...data.values, 10); 
+    const maxValue = Math.max(...data.values, 10);
     ctx.beginPath();
-    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-purple-300');
+    ctx.strokeStyle = '#a78bfa';
     ctx.moveTo(padding, padding);
     ctx.lineTo(padding, rect.height - padding);
     ctx.lineTo(rect.width - padding, rect.height - padding);
     ctx.stroke();
-    
+
     data.values.forEach((value, index) => {
       const x = padding + index * (barWidth + 10);
       const barHeight = (value / maxValue) * chartHeight;
       const y = rect.height - padding - barHeight;
-      
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-pink-700');
+
+      ctx.fillStyle = '#be185d';
       ctx.fillRect(x, y, barWidth, barHeight);
-      
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--color-purple-700');
+      ctx.fillStyle = '#6d28d9';
       ctx.font = '12px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(data.labels[index], x + barWidth / 2, rect.height - padding + 15);
       ctx.fillText(`${value}%`, x + barWidth / 2, y - 10);
     });
-    
+
   }, [data]);
-  
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{title}</h3>

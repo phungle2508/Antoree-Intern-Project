@@ -2,7 +2,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, BookOpen, Calendar, AlignCenterVertical as Certificate, MessageSquare, Settings, LogOut, X } from 'lucide-react';
 import Logo from '../ui/Logo';
-import { useState } from 'react';
 interface SidebarLink {
   name: string;
   href: string;
@@ -53,14 +52,14 @@ const DashboardSidebar = ({ isMobile, isOpen, onClose }: DashboardSidebarProps) 
   return (
     <>
       {isMobile && isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-gray-900/80 z-40"
           onClick={onClose}
         ></div>
       )}
-      <div 
+      <div
         className={`
-          ${isMobile 
+          ${isMobile
             ? `fixed inset-y-0 z-50 transition-transform transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'}`
             : 'hidden lg:flex'
           }
@@ -75,7 +74,7 @@ const DashboardSidebar = ({ isMobile, isOpen, onClose }: DashboardSidebarProps) 
               <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">Saket LearnHub</span>
             </Link>
             {isMobile && (
-              <button 
+              <button
                 onClick={onClose}
                 className="ml-auto text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               >
@@ -108,9 +107,9 @@ const DashboardSidebar = ({ isMobile, isOpen, onClose }: DashboardSidebarProps) 
           <div className="p-4 border-t border-gray-200 dark:border-gray-700">
             <div className="flex items-center">
               <img
-              src="/images/saket.jpg"
-              alt="Saket Kumar Sinha"
-              className="h-10 w-10 rounded-full"
+                src="/images/saket.jpg"
+                alt="Saket Kumar Sinha"
+                className="h-10 w-10 rounded-full"
               />
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-900 dark:text-white">Saket Kumar Sinha</p>

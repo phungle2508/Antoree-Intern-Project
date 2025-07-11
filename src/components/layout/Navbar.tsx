@@ -44,13 +44,13 @@ const Navbar = () => {
 
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-4">
-              <Link 
-                to="/courses" 
+              <Link
+                to="/courses"
                 className={`px-3 py-2 rounded-md text-sm font-medium ${isHomePage && !isScrolled ? 'text-white hover:bg-white/10' : 'text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
                 Courses
               </Link>
-              <Link 
-                to="/dashboard" 
+              <Link
+                to="/dashboard"
                 className={`px-3 py-2 rounded-md text-sm font-medium ${isHomePage && !isScrolled ? 'text-white hover:bg-white/10' : 'text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
                 Dashboard
               </Link>
@@ -60,16 +60,7 @@ const Navbar = () => {
                 aria-label="Toggle dark mode">
                 {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
               </button>
-              <Link
-                to="/signin"
-                className="btn btn-outline">
-                Sign In
-              </Link>
-              <Link
-                to="/signup"
-                className="py-2 px-4 rounded-md text-white bg-red-700 hover:bg-red-800 transition-colors">
-                Sign Up
-              </Link>
+
             </div>
           </div>
 

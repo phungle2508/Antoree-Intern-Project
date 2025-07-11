@@ -1,68 +1,68 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, Award, Bell, ArrowRight, BookOpen, Search } from 'lucide-react';
-import DashboardSidebar from '../components/dashboard/DashboardSidebar';
+import { Bell, ArrowRight, BookOpen, Search, Heart, ShoppingCart, HistoryIcon } from 'lucide-react';
 import CourseProgress from '../components/dashboard/CourseProgress';
-import ProgressChart from '../components/dashboard/ProgressChart';
-import userData from '../data/userProgress';
+import { getUserDataFromCookie } from '../services/history';
 import courses from '../data/courses';
 import { useTheme } from '../context/ThemeContext';
-
+import { getWishlist, getCart, CartItem } from '../services/cookie';
+import Cart from '../components/dashboard/Cart';
+import Wishlist from '../components/dashboard/Wishlist';
+import { UserData } from '../data';
 const Dashboard = () => {
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  
+
+  // State for cookie s
+  const [wishlist, setWishlist] = useState<string[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [userData, setUserData] = useState<UserData | null>(getUserDataFromCookie());
+
+  // Function to update s from cookies
+  const updateFromCookie = () => {
+    setWishlist(getWishlist() || []);
+    setCart(getCart() || []);
+
+    setUserData(getUserDataFromCookie() || null);
+
+
+  };
+
+  // Scroll to top and update title when component mounts
   useEffect(() => {
+    console.log(userData);
+
     window.scrollTo(0, 0);
     document.title = 'Dashboard | Saket LearnHub';
+    updateFromCookie();
+
+    // Poll for cookie changes every 500ms
+    const interval = setInterval(updateFromCookie, 500);
+
+    return () => clearInterval(interval);
   }, []);
-  
-  const enrolledCourses = courses.filter(course => 
-    userData.enrolledCourses.includes(course.id)
+
+  const enrolledCourses = courses.filter(course =>
+    userData?.enrolledCourses.includes(course.id)
   );
-  
-  const weeklyProgressData = {
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    values: [15, 25, 10, 30, 20, 5, 25]
-  };
-  
-  const completedLectures = userData.progress.reduce(
-    (total, course) => total + course.completedLectures.length, 
-    0
-  );
-  
-  const averageProgress = userData.progress.length 
-    ? userData.progress.reduce((sum, course) => sum + course.overallProgress, 0) / userData.progress.length 
-    : 0;
-  
+
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <DashboardSidebar 
-        isMobile={true} 
-        isOpen={isMobileSidebarOpen} 
-        onClose={() => setIsMobileSidebarOpen(false)} 
-      />
-      <DashboardSidebar 
-        isMobile={false} 
-        isOpen={true} 
-        onClose={() => {}} 
-      />
-      
-      <div className="lg:pl-64">
+      <div className="">
         <header className="bg-white dark:bg-gray-800 shadow-sm">
           <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center">
               <button
                 type="button"
                 className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 lg:hidden"
-                onClick={() => setIsMobileSidebarOpen(true)}
+
               >
                 <span className="sr-only">Open sidebar</span>
                 <BookOpen className="h-6 w-6" />
               </button>
               <h1 className="ml-3 text-xl font-semibold text-gray-900 dark:text-white lg:ml-0">Dashboard</h1>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <div className="relative hidden md:block w-64">
                 <input
@@ -74,7 +74,7 @@ const Dashboard = () => {
                   <Search className="h-4 w-4 text-gray-400" />
                 </div>
               </div>
-              
+
               <button
                 type="button"
                 className="relative p-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
@@ -83,7 +83,7 @@ const Dashboard = () => {
                 <Bell className="h-6 w-6" />
                 <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
               </button>
-              
+
               <button
                 type="button"
                 onClick={toggleTheme}
@@ -100,10 +100,10 @@ const Dashboard = () => {
                   </svg>
                 )}
               </button>
-              
+
               <div className="flex items-center">
                 <img
-                  src={userData.avatarUrl}
+                  src={userData?.avatarUrl}
                   alt="User avatar"
                   className="h-8 w-8 rounded-full object-cover"
                 />
@@ -111,174 +111,127 @@ const Dashboard = () => {
             </div>
           </div>
         </header>
-        
+
         <main className="py-8 px-4 sm:px-6 lg:px-8">
+
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome back, {userData.name}!</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome back, {userData?.name}!</h2>
             <p className="text-gray-600 dark:text-gray-400 mt-1">
               Continue your learning journey. You're making great progress!
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
               <div className="flex items-center">
-                <div className="p-3 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400">
-                  <BookOpen className="h-6 w-6" />
+                <div className="p-3 rounded-full bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400">
+                  <Heart className="h-6 w-6" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Courses Enrolled</p>
-                  <p className="text-2xl font-semibold text-gray-900 dark:text-white">{userData.enrolledCourses.length}</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Wishlist</p>
+                  <p className="text-2xl font-semibold text-gray-900 dark:text-white">{wishlist.length}</p>
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
               <div className="flex items-center">
-                <div className="p-3 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
-                  <Award className="h-6 w-6" />
+                <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                  <ShoppingCart className="h-6 w-6" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Certificates Earned</p>
-                  <p className="text-2xl font-semibold text-gray-900 dark:text-white">{userData.certificates.length}</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Cart</p>
+                  <p className="text-2xl font-semibold text-gray-900 dark:text-white">{cart.length}</p>
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
               <div className="flex items-center">
-                <div className="p-3 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400">
-                  <Clock className="h-6 w-6" />
+                <div className="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400">
+                  <HistoryIcon className="h-6 w-6" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Completed Lectures</p>
-                  <p className="text-2xl font-semibold text-gray-900 dark:text-white">{completedLectures}</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-              <div className="flex items-center">
-                <div className="p-3 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
-                  <Calendar className="h-6 w-6" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Average Progress</p>
-                  <p className="text-2xl font-semibold text-gray-900 dark:text-white">{Math.round(averageProgress)}%</p>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">History</p>
+                  <p className="text-2xl font-semibold text-gray-900 dark:text-white">{userData?.enrolledCourses.length}</p>
                 </div>
               </div>
             </div>
           </div>
-          
+
+
+          <div className=" grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <Cart cart={cart} />
+          </div>
+
+          <div className=" grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <Wishlist whislist={wishlist} />
+          </div>
+
+
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">Continue Learning</h2>
-              <Link 
-                to="/dashboard/courses" 
+              <Link
+                to="/dashboard/courses"
                 className="text-teal-600 dark:text-teal-400 hover:underline flex items-center text-sm font-medium"
               >
                 View all courses
                 <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {enrolledCourses.map(course => {
-                const courseProgress = userData.progress.find(p => p.courseId === course.id);
-                if (!courseProgress) return null;
-                
-                return (
-                  <CourseProgress 
-                    key={course.id} 
-                    course={course} 
-                    progress={courseProgress} 
-                  />
-                );
-              })}
+              {[...enrolledCourses] // make a shallow copy to avoid mutating the original
+                .sort((a, b) => {
+                  const progressA = userData?.progress.find(p => p.courseId === a.id);
+                  const progressB = userData?.progress.find(p => p.courseId === b.id);
+
+                  const dateA = progressA ? new Date(progressA.lastAccessed).getTime() : 0;
+                  const dateB = progressB ? new Date(progressB.lastAccessed).getTime() : 0;
+
+                  return dateB - dateA; // descending order
+                })
+                .map(course => {
+                  const courseProgress = userData?.progress.find(p => p.courseId === course.id);
+                  if (!courseProgress) return null;
+
+                  return (
+                    <CourseProgress
+                      key={course.id}
+                      course={course}
+                      progress={courseProgress}
+                    />
+                  );
+                })}
+
             </div>
           </div>
-          
-          <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Learning Analytics</h2>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <ProgressChart 
-                data={weeklyProgressData} 
-                title="Weekly Learning Activity" 
-              />
-              
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Upcoming Deadlines</h3>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-                    <Calendar className="h-5 w-5 text-teal-600 dark:text-teal-400 mt-0.5 mr-3 flex-shrink-0" />
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">
-                        Assignment Due: React Components
-                      </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Modern React with Redux • Due in 2 days
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-                    <Calendar className="h-5 w-5 text-warning-600 dark:text-warning-400 mt-0.5 mr-3 flex-shrink-0" />
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">
-                        Quiz: Python Basics
-                      </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Complete Python Bootcamp • Due in 5 days
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start p-3 rounded-lg bg-gray-50 dark:bg-gray-700">
-                    <Calendar className="h-5 w-5 text-success-600 dark:text-success-400 mt-0.5 mr-3 flex-shrink-0" />
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">
-                        Project Submission: UI Redesign
-                      </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        UI/UX Design Masterclass • Due in 7 days
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="mt-4 text-center">
-                  <button className="text-teal-600 dark:text-teal-400 hover:underline text-sm font-medium">
-                    View Full Calendar
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          
+
           <div>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white">Recommended for You</h2>
-              <Link 
-                to="/courses" 
+              <Link
+                to="/courses"
                 className="text-teal-600 dark:text-teal-400 hover:underline flex items-center text-sm font-medium"
               >
                 Browse all courses
                 <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {courses
-                .filter(course => !userData.enrolledCourses.includes(course.id))
+                .filter(course => !userData?.enrolledCourses.includes(course.id))
                 .slice(0, 3)
                 .map(course => (
                   <div key={course.id} className="card group">
                     <div className="relative overflow-hidden">
-                      <img 
-                        src={course.imageUrl} 
-                        alt={course.title} 
+                      <img
+                        src={course.imageUrl}
+                        alt={course.title}
                         className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute top-3 left-3">
@@ -300,8 +253,8 @@ const Dashboard = () => {
                         <div className="font-bold text-gray-900 dark:text-white">
                           ${course.price?.toFixed(2)}
                         </div>
-                        <Link 
-                          to={`/courses/${course.id}`} 
+                        <Link
+                          to={`/courses/${course.id}`}
                           className="px-4 py-1.5 text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition-colors"
                         >
                           View Course
@@ -313,7 +266,7 @@ const Dashboard = () => {
               }
             </div>
           </div>
-          
+
           <div className="flex justify-center mt-12">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 flex items-center space-x-3">
               <span className="text-gray-700 dark:text-gray-300">Made by Saket</span>

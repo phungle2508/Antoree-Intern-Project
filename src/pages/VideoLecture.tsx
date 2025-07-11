@@ -1,17 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Play, 
-  Pause, 
-  Volume2, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Pause,
+  Volume2,
   VolumeX,
-  Maximize, 
-  Settings, 
-  SkipBack, 
-  SkipForward, 
-  List, 
+  Maximize,
+  Settings,
+  SkipBack,
+  SkipForward,
+  List,
   X,
   BookOpen,
   FileText,
@@ -20,11 +20,12 @@ import {
   CheckCircle
 } from 'lucide-react';
 import courses, { Course, LectureItem } from '../data/courses';
+import { updateFinishProgressOfUserData } from '../services/history';
 
 const VideoLecture = () => {
   const { courseId, lectureId } = useParams<{ courseId: string, lectureId: string }>();
   const navigate = useNavigate();
-  
+
   const [course, setCourse] = useState<Course | null>(null);
   const [currentLecture, setCurrentLecture] = useState<LectureItem | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,10 +38,10 @@ const VideoLecture = () => {
   const [activeTab, setActiveTab] = useState<'content' | 'notes' | 'discussions'>('content');
   const [notes, setNotes] = useState('');
   const [showCompletionModal, setShowCompletionModal] = useState(false);
-  
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
     window.scrollTo(0, 0);
     const foundCourse = courses.find(c => c.id === courseId);
@@ -54,7 +55,7 @@ const VideoLecture = () => {
           break;
         }
       }
-      
+
       if (lecture) {
         setCurrentLecture(lecture);
         document.title = `${lecture.title} | Saket LearnHub`;
@@ -65,29 +66,32 @@ const VideoLecture = () => {
     }, 800);
     const timer = setTimeout(() => {
       setShowCompletionModal(true);
+      if (courseId && lectureId) {
+        updateFinishProgressOfUserData(courseId, lectureId);
+      }
     }, 10000);
-    
+
     return () => clearTimeout(timer);
   }, [courseId, lectureId]);
-  
+
   const getAllLectures = (course: Course): LectureItem[] => {
     return course?.curriculum.flatMap(section => section.lectures) || [];
   };
-  
+
   const getAdjacentLectures = () => {
     if (!course || !currentLecture) return { prev: null, next: null };
-    
+
     const allLectures = getAllLectures(course);
     const currentIndex = allLectures.findIndex(l => l.id === currentLecture.id);
-    
+
     return {
       prev: currentIndex > 0 ? allLectures[currentIndex - 1] : null,
       next: currentIndex < allLectures.length - 1 ? allLectures[currentIndex + 1] : null
     };
   };
-  
+
   const { prev, next } = course ? getAdjacentLectures() : { prev: null, next: null };
-  
+
   // Video player controls
   const togglePlay = () => {
     if (videoRef.current) {
@@ -99,13 +103,13 @@ const VideoLecture = () => {
       setIsPlaying(!isPlaying);
     }
   };
-  
+
   const handleProgress = (e: React.SyntheticEvent<HTMLVideoElement>) => {
     const video = e.currentTarget;
     const progress = (video.currentTime / video.duration) * 100;
     setVideoProgress(progress);
   };
-  
+
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
     if (videoRef.current) {
       const progressBar = e.currentTarget;
@@ -114,14 +118,14 @@ const VideoLecture = () => {
       videoRef.current.currentTime = pos * videoRef.current.duration;
     }
   };
-  
+
   const toggleMute = () => {
     if (videoRef.current) {
       videoRef.current.muted = !isMuted;
       setIsMuted(!isMuted);
     }
   };
-  
+
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
     setVolume(value);
@@ -130,7 +134,7 @@ const VideoLecture = () => {
       setIsMuted(value === 0);
     }
   };
-  
+
   const toggleFullscreen = () => {
     if (videoContainerRef.current) {
       if (!isFullscreen) {
@@ -145,21 +149,21 @@ const VideoLecture = () => {
       setIsFullscreen(!isFullscreen);
     }
   };
-  
+
   const seek = (seconds: number) => {
     if (videoRef.current) {
       videoRef.current.currentTime += seconds;
     }
   };
-  
+
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
-  
+
   const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNotes(e.target.value);
   };
-  
+
   const markAsCompleted = () => {
     setShowCompletionModal(false);
 
@@ -167,7 +171,7 @@ const VideoLecture = () => {
       navigate(`/lecture/${courseId}/${next.id}`);
     }
   };
-  
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900 pt-16">
@@ -175,7 +179,7 @@ const VideoLecture = () => {
       </div>
     );
   }
-  
+
   if (!course || !currentLecture) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 pt-16 px-4">
@@ -184,7 +188,7 @@ const VideoLecture = () => {
         <p className="text-gray-400 mb-6 text-center">
           The lecture you're looking for doesn't exist or has been removed.
         </p>
-        <button 
+        <button
           onClick={() => navigate(`/courses/${courseId}`)}
           className="btn btn-primary flex items-center"
         >
@@ -194,7 +198,7 @@ const VideoLecture = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="min-h-screen bg-gray-900 text-white pt-16">
       <div className="flex flex-col h-[calc(100vh-4rem)]">
@@ -214,20 +218,20 @@ const VideoLecture = () => {
                 <source src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
-              
+
               {/* Video Controls */}
               <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
                 {/* Progress Bar */}
-                <div 
+                <div
                   className="relative h-1 bg-gray-600 rounded-full mb-2 cursor-pointer"
                   onClick={handleSeek}
                 >
-                  <div 
+                  <div
                     className="absolute top-0 left-0 h-full bg-primary-500 rounded-full"
                     style={{ width: `${videoProgress}%` }}
                   ></div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <button className="p-1 hover:text-primary-400" onClick={togglePlay}>
@@ -255,7 +259,7 @@ const VideoLecture = () => {
                     </div>
                     <span className="text-sm text-gray-300">00:00 / 10:00</span>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
                     <button className="p-1 hover:text-primary-400 lg:hidden" onClick={toggleSidebar}>
                       <List size={20} />
@@ -269,9 +273,9 @@ const VideoLecture = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Play/Pause overlay */}
-              <div 
+              <div
                 className="absolute inset-0 flex items-center justify-center pointer-events-none"
                 style={{ opacity: isPlaying ? 0 : 0.8 }}
               >
@@ -280,12 +284,12 @@ const VideoLecture = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Lecture Info */}
             <div className="p-4 border-b border-gray-800">
               <div className="flex items-center justify-between mb-2">
                 <h1 className="text-xl font-bold">{currentLecture.title}</h1>
-                <button 
+                <button
                   className="md:hidden flex items-center text-primary-400 hover:text-primary-300"
                   onClick={toggleSidebar}
                 >
@@ -295,7 +299,7 @@ const VideoLecture = () => {
               </div>
               <p className="text-gray-400">{currentLecture.description}</p>
             </div>
-            
+
             {/* Navigation */}
             <div className="p-4 flex items-center justify-between border-b border-gray-800">
               <Link
@@ -306,7 +310,7 @@ const VideoLecture = () => {
                 <ChevronLeft size={20} className="mr-1" />
                 <span>Previous</span>
               </Link>
-              
+
               <Link
                 to={`/courses/${courseId}`}
                 className="flex items-center text-gray-400 hover:text-white"
@@ -314,7 +318,7 @@ const VideoLecture = () => {
                 <BookOpen size={20} className="mr-1" />
                 <span>Course Page</span>
               </Link>
-              
+
               <Link
                 to={next ? `/lecture/${courseId}/${next.id}` : `#`}
                 className={`flex items-center ${next ? 'text-primary-400 hover:text-primary-300' : 'text-gray-600 cursor-not-allowed'}`}
@@ -325,30 +329,29 @@ const VideoLecture = () => {
               </Link>
             </div>
           </div>
-          
+
           {/* Sidebar */}
-          <div 
+          <div
             className={`fixed top-16 right-0 bottom-0 w-full sm:w-80 bg-gray-800 overflow-y-auto transition-transform duration-300 z-20 
             ${showSidebar ? 'translate-x-0' : 'translate-x-full lg:hidden'}`}
           >
             <div className="flex items-center justify-between p-4 border-b border-gray-700">
               <h2 className="text-lg font-semibold">Course Content</h2>
-              <button 
+              <button
                 className="lg:hidden p-1 text-gray-400 hover:text-white"
                 onClick={toggleSidebar}
               >
                 <X size={20} />
               </button>
             </div>
-            
+
             {/* Tabs */}
             <div className="flex border-b border-gray-700">
               <button
-                className={`flex-1 py-3 text-center text-sm font-medium ${
-                  activeTab === 'content' 
-                    ? 'text-white border-b-2 border-primary-500' 
+                className={`flex-1 py-3 text-center text-sm font-medium ${activeTab === 'content'
+                    ? 'text-white border-b-2 border-primary-500'
                     : 'text-gray-400 hover:text-white'
-                }`}
+                  }`}
                 onClick={() => setActiveTab('content')}
               >
                 <div className="flex items-center justify-center">
@@ -357,11 +360,10 @@ const VideoLecture = () => {
                 </div>
               </button>
               <button
-                className={`flex-1 py-3 text-center text-sm font-medium ${
-                  activeTab === 'notes' 
-                    ? 'text-white border-b-2 border-primary-500' 
+                className={`flex-1 py-3 text-center text-sm font-medium ${activeTab === 'notes'
+                    ? 'text-white border-b-2 border-primary-500'
                     : 'text-gray-400 hover:text-white'
-                }`}
+                  }`}
                 onClick={() => setActiveTab('notes')}
               >
                 <div className="flex items-center justify-center">
@@ -370,11 +372,10 @@ const VideoLecture = () => {
                 </div>
               </button>
               <button
-                className={`flex-1 py-3 text-center text-sm font-medium ${
-                  activeTab === 'discussions' 
-                    ? 'text-white border-b-2 border-primary-500' 
+                className={`flex-1 py-3 text-center text-sm font-medium ${activeTab === 'discussions'
+                    ? 'text-white border-b-2 border-primary-500'
                     : 'text-gray-400 hover:text-white'
-                }`}
+                  }`}
                 onClick={() => setActiveTab('discussions')}
               >
                 <div className="flex items-center justify-center">
@@ -383,7 +384,7 @@ const VideoLecture = () => {
                 </div>
               </button>
             </div>
-            
+
             {/* Tab Content */}
             <div className="p-4">
               {activeTab === 'content' && (
@@ -396,11 +397,10 @@ const VideoLecture = () => {
                           <Link
                             key={lecture.id}
                             to={`/lecture/${courseId}/${lecture.id}`}
-                            className={`flex items-start p-2 rounded-lg ${
-                              lecture.id === currentLecture.id 
-                                ? 'bg-primary-900 text-primary-200' 
+                            className={`flex items-start p-2 rounded-lg ${lecture.id === currentLecture.id
+                                ? 'bg-primary-900 text-primary-200'
                                 : 'text-gray-300 hover:bg-gray-700'
-                            }`}
+                              }`}
                           >
                             <Play size={16} className="mr-2 mt-0.5 flex-shrink-0" />
                             <div className="flex-1">
@@ -421,7 +421,7 @@ const VideoLecture = () => {
                   ))}
                 </div>
               )}
-              
+
               {activeTab === 'notes' && (
                 <div>
                   <p className="text-gray-300 mb-4">
@@ -440,7 +440,7 @@ const VideoLecture = () => {
                   </div>
                 </div>
               )}
-              
+
               {activeTab === 'discussions' && (
                 <div>
                   <p className="text-gray-300 mb-4">
@@ -472,7 +472,7 @@ const VideoLecture = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Completion Modal */}
       {showCompletionModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
@@ -490,7 +490,7 @@ const VideoLecture = () => {
             </p>
             <div className="flex flex-col space-y-3">
               {next ? (
-                <button 
+                <button
                   onClick={() => {
                     setShowCompletionModal(false);
                     navigate(`/lecture/${courseId}/${next.id}`);
@@ -500,7 +500,7 @@ const VideoLecture = () => {
                   Continue to Next Lecture
                 </button>
               ) : (
-                <button 
+                <button
                   onClick={() => {
                     setShowCompletionModal(false);
                     navigate(`/courses/${courseId}`);
@@ -510,7 +510,7 @@ const VideoLecture = () => {
                   Back to Course Page
                 </button>
               )}
-              <button 
+              <button
                 onClick={() => setShowCompletionModal(false)}
                 className="btn btn-outline"
               >

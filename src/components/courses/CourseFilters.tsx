@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Filter, X, ChevronDown } from 'lucide-react';
+import { Category } from '../../data/category';
 interface CourseFiltersProps {
-  categories: string[];
+  categories: Category[];
   levels: string[];
   onFilterChange: (filters: FilterState) => void;
   onReset: () => void;
+  currentFilters?: FilterState;
 }
 export interface FilterState {
   category: string;
@@ -12,12 +14,7 @@ export interface FilterState {
   priceRange: [number, number] | null;
   sort: string;
 }
-const CourseFilters = ({
-  categories,
-  levels,
-  onFilterChange,
-  onReset
-}: CourseFiltersProps) => {
+const CourseFilters = ({ categories, levels, onFilterChange, onReset, currentFilters }: CourseFiltersProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     category: '',
@@ -25,11 +22,21 @@ const CourseFilters = ({
     priceRange: null,
     sort: 'popular'
   });
-  const handleFilterChange = (key: keyof FilterState, value: any) => {
+  
+  useEffect(() => {
+    if (currentFilters) {
+      console.log(currentFilters);
+      setFilters(currentFilters);
+    }
+  }, [currentFilters]);
+
+
+  const handleFilterChange = (key: keyof FilterState, value: unknown) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
     onFilterChange(newFilters);
   };
+
   const resetFilters = () => {
     const resetState = {
       category: '',
@@ -77,9 +84,9 @@ const CourseFilters = ({
               className="select"
             >
               <option value="">All Categories</option>
-              {categories.map((category) => (
-                <option key={category} value={category}>{category}</option>
-              ))}
+                {categories.filter(cat => cat.name !== 'All').map((category) => (
+                <option key={category.id} value={category.id}>{category.name}</option>
+                ))}
             </select>
           </div>
           <div>
@@ -91,7 +98,7 @@ const CourseFilters = ({
               onChange={(e) => handleFilterChange('level', e.target.value)}
               className="select">
               <option value="">All Levels</option>
-              {levels.map((level) => (
+              {levels.filter(level => level !== 'All').map((level) => (
                 <option key={level} value={level}>{level}</option>
               ))}
             </select>

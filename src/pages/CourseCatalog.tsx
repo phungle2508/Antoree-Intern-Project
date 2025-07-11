@@ -4,49 +4,64 @@ import { Search, BookOpen } from 'lucide-react';
 import CourseCard from '../components/courses/CourseCard';
 import CourseFilters, { FilterState } from '../components/courses/CourseFilters';
 import courses, { Course } from '../data/courses';
+import categoriesInit from '../data/category';
+
+const COURSES_PER_PAGE = 8;
 
 const CourseCatalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const categories = Array.from(new Set(courses.map(course => course.category)));
-  const levels = Array.from(new Set(courses.map(course => course.level)));
+  const [currentPage, setCurrentPage] = useState(1);
+  const [allFilters, setAllFilters] = useState<FilterState>({
+    category: '',
+    level: '',
+    priceRange: null,
+    sort: 'popular'
+  });
+
+  const levels = ['All', ...Array.from(new Set(courses.map(course => course.level)))];
 
   useEffect(() => {
     document.title = 'Course Catalog | Saket LearnHub';
-    
+
     const categoryParam = searchParams.get('category');
-    if (categoryParam) {
-      applyFilters({
-        category: categoryParam,
-        level: '',
-        priceRange: null,
-        sort: 'popular'
-      });
-    } else {
-      setFilteredCourses(courses);
-    }
-    
+    const levelParam = searchParams.get('level');
+    const priceParam = searchParams.get('price');
+    const sortParam = searchParams.get('sort');
+    const searchParam = searchParams.get('search') || '';
+
+    setSearchQuery(searchParam);
+
+    const newFilters: FilterState = {
+      category: categoryParam || '',
+      level: levelParam || '',
+      priceRange: priceParam ? [priceParam.split(',').map(Number)[0], priceParam.split(',').map(Number)[1]] as [number, number] : null,
+      sort: sortParam || 'popular'
+    };
+
+    setAllFilters(newFilters);
+    applyFilters(newFilters, searchParam);
+
     setTimeout(() => {
       setIsLoading(false);
     }, 800);
-    
+
     window.scrollTo(0, 0);
   }, [searchParams]);
 
-  const applyFilters = (filters: FilterState) => {
+  const applyFilters = (filters: FilterState, searchTerm: string = searchQuery) => {
     let results = [...courses];
-    
 
-    if (filters.category) {
-      results = results.filter(course => course.category === filters.category);
+    if (filters.category && filters.category !== 'All') {
+      results = results.filter(course => course.category.replace(/-/g, ' ').toLowerCase() === filters.category.replace(/-/g, ' ').toLowerCase());
     }
-    
-    if (filters.level) {
+
+    if (filters.level && filters.level !== 'All') {
       results = results.filter(course => course.level === filters.level);
     }
-    
+
     if (filters.priceRange) {
       const [min, max] = filters.priceRange;
       results = results.filter(course => {
@@ -54,11 +69,11 @@ const CourseCatalog = () => {
         return price >= min && price <= max;
       });
     }
-    
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      results = results.filter(course => 
-        course.title.toLowerCase().includes(query) || 
+
+    if (searchTerm) {
+      const query = searchTerm.toLowerCase();
+      results = results.filter(course =>
+        course.title.toLowerCase().includes(query) ||
         course.description.toLowerCase().includes(query) ||
         course.tags.some(tag => tag.toLowerCase().includes(query))
       );
@@ -82,25 +97,40 @@ const CourseCatalog = () => {
         results.sort((a, b) => b.enrolledStudents - a.enrolledStudents);
         break;
     }
-    
+
     setFilteredCourses(results);
+    setCurrentPage(1);
+  };
+
+  const handleFilterChange = (newFilters: FilterState) => {
+    setAllFilters(newFilters);
+    applyFilters(newFilters);
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    applyFilters({
-      category: '',
-      level: '',
-      priceRange: null,
-      sort: 'popular'
-    });
+    applyFilters(allFilters, searchQuery);
   };
 
   const resetFilters = () => {
     setSearchQuery('');
+    const resetFilters: FilterState = {
+      category: '',
+      level: '',
+      priceRange: null,
+      sort: 'popular'
+    };
+    setAllFilters(resetFilters);
     setFilteredCourses(courses);
     setSearchParams({});
   };
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredCourses.length / COURSES_PER_PAGE);
+  const paginatedCourses = filteredCourses.slice(
+    (currentPage - 1) * COURSES_PER_PAGE,
+    currentPage * COURSES_PER_PAGE
+  );
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen pt-20">
@@ -114,7 +144,7 @@ const CourseCatalog = () => {
             Browse through our extensive collection of high-quality courses across various categories and skill levels
           </p>
         </div>
-        
+
         {/* Search Bar */}
         <div className="max-w-2xl mx-auto mb-8">
           <form onSubmit={handleSearch} className="relative">
@@ -133,16 +163,17 @@ const CourseCatalog = () => {
             </button>
           </form>
         </div>
-        
+
         {/* Filters and Courses */}
         <div className="mt-6">
-          <CourseFilters 
-            categories={categories} 
-            levels={levels} 
-            onFilterChange={applyFilters} 
+          <CourseFilters
+            categories={categoriesInit}
+            levels={levels}
+            onFilterChange={handleFilterChange}
             onReset={resetFilters}
+            currentFilters={allFilters}
           />
-          
+
           {isLoading ? (
             <div className="flex justify-center items-center py-12">
               <div className="w-12 h-12 border-t-4 border-primary-500 border-solid rounded-full animate-spin"></div>
@@ -150,14 +181,43 @@ const CourseCatalog = () => {
           ) : filteredCourses.length > 0 ? (
             <>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Showing {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
+                Showing {paginatedCourses.length} of {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
               </p>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredCourses.map(course => (
+                {paginatedCourses.map(course => (
                   <CourseCard key={course.id} course={course} />
                 ))}
               </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="flex justify-center mt-8 space-x-2">
+                  <button
+                    className="btn"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                  >
+                    Previous
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                      key={i + 1}
+                      className={`btn ${currentPage === i + 1 ? 'btn-primary' : ''}`}
+                      onClick={() => setCurrentPage(i + 1)}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                  <button
+                    className="btn"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </>
           ) : (
             <div className="text-center py-12">

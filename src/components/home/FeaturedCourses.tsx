@@ -3,11 +3,16 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import courses from '../../data/courses';
 import { Course } from '../../data/courses';
+import CourseDetail from '../../pages/CourseDetail';
+import { updateProgressOfUserData } from '../../services/history';
 const FeaturedCourses = () => {
   const [visibleCourses, setVisibleCourses] = useState<Course[]>([]);
   const sliderRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState<string>('');
+  const [imageLoadStates, setImageLoadStates] = useState<{ [key: string]: boolean }>({});
   useEffect(() => {
     const featuredCourses = courses.filter(course => course.isFeatured);
     setVisibleCourses(featuredCourses);
@@ -36,6 +41,9 @@ const FeaturedCourses = () => {
       sliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
+  const handleImageLoad = (courseId: string) => {
+    setImageLoadStates(prev => ({ ...prev, [courseId]: true }));
+  };
   return (
     <section className="py-16 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,7 +58,7 @@ const FeaturedCourses = () => {
         </div>
 
         <div className="relative">
-          <button 
+          <button
             className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg ${!canScrollLeft ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-100 dark:hover:bg-orange-700'}`}
             onClick={() => scroll('left')}
             disabled={!canScrollLeft}
@@ -58,7 +66,7 @@ const FeaturedCourses = () => {
             <ChevronLeft size={24} className="text-gray-700 dark:text-gray-300" />
           </button>
 
-          <div 
+          <div
             ref={sliderRef}
             className="flex overflow-x-auto gap-6 pb-6 scrollbar-hide"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
@@ -66,10 +74,19 @@ const FeaturedCourses = () => {
               <div key={course.id} className="flex-shrink-0 w-full sm:w-[340px]">
                 <div className="card group h-full flex flex-col">
                   <div className="relative overflow-hidden">
-                    <img 
-                      src={course.imageUrl} 
-                      alt={course.title} 
-                      className="w-full h-48 object-cover object-center group-hover:scale-105 transition-transform duration-300"/>
+                    {/* Skeleton loader */}
+                    <div className="w-full h-48 relative">
+                      {!imageLoadStates[course.id] && (
+                        <div className="absolute inset-0 w-full h-full bg-gray-200 dark:bg-gray-700 animate-pulse rounded-t-lg" />
+                      )}
+                      <img
+                        src={course.imageUrl}
+                        alt={course.title}
+                        className={`w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300 rounded-t-lg ${!imageLoadStates[course.id] ? 'opacity-0' : 'opacity-100'}`}
+                        onLoad={() => handleImageLoad(course.id)}
+                        style={{ position: 'absolute', inset: 0 }}
+                      />
+                    </div>
                     <div className="absolute top-3 left-3">
                       <span className="badge badge-[orange] bg-orange-500 text-white">
                         {course.category}
@@ -91,10 +108,10 @@ const FeaturedCourses = () => {
                     <div className="flex items-center text-gray-700 dark:text-gray-300 text-sm mb-1">
                       <div className="flex items-center">
                         {Array(5).fill(0).map((_, i) => (
-                          <Star 
-                            key={i} 
-                            size={16} 
-                            className={`${i < Math.floor(course.rating) ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300 dark:text-gray-600'}`} 
+                          <Star
+                            key={i}
+                            size={16}
+                            className={`${i < Math.floor(course.rating) ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300 dark:text-gray-600'}`}
                           />
                         ))}
                       </div>
@@ -108,16 +125,45 @@ const FeaturedCourses = () => {
                       <div className="font-bold text-gray-900 dark:text-white">
                         {course.price ? `$${course.price.toFixed(2)}` : 'Free'}
                       </div>
-                      <Link to={`/courses/${course.id}`} className="btn bg-orange-600 text-white hover:bg-orange-700 text-sm py-1.5">
+                      <button
+                        className="btn bg-orange-500 hover:bg-orange-600 text-sm py-1.5"
+                        onClick={() => {
+                          setSelectedCourseId(course.id);
+                          setShowModal(true);
+                          updateProgressOfUserData(course.id);
+                        }} >
                         View Course
-                      </Link>
+
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          <button 
+
+          {/* Modal for CourseDetail - moved outside the map */}
+          {showModal && selectedCourseId && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent">
+              <div className="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg max-w-4xl w-full h-[90vh] overflow-y-auto p-4">
+                <button
+                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 dark:hover:text-white text-2xl"
+                  onClick={() => {
+                    setShowModal(false);
+                    setSelectedCourseId('');
+                  }}
+                >
+                  ×
+                </button>
+                <CourseDetail courseId={selectedCourseId} modalMode onClose={() => {
+                  setShowModal(false);
+                  setSelectedCourseId('');
+                }} />
+              </div>
+            </div>
+          )}
+
+          <button
             className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg ${!canScrollRight ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-100 dark:hover:bg-orange-700'}`}
             onClick={() => scroll('right')}
             disabled={!canScrollRight}

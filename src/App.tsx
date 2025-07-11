@@ -47,6 +47,7 @@ function App() {
         </Route>
       </Routes>
     </ThemeProvider>
+    
   );
 }
 export default App;
