@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
-import courses from '../../data/courses';
-import { Course } from '../../data/courses';
 import CourseDetail from '../../pages/CourseDetail';
+import { courses } from '../../data';
+import { Course } from '../../types';
 const FeaturedCourses = () => {
   const [visibleCourses, setVisibleCourses] = useState<Course[]>([]);
   const sliderRef = useRef<HTMLDivElement>(null);

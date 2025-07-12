@@ -1,4 +1,5 @@
 import axios from '../lib/axios'; // or just '../lib/axios'
+import { CourseRecommendation, ChatAIResult } from '../types';
 
 
 
@@ -6,7 +7,6 @@ export const recommendCourses = async (courseId: string, topK: number = 3): Prom
     const res = await axios.get('/recommend', {
         params: { course_id: courseId, top_k: topK }
     });
-    console.log(res.data);
     return res.data;
 };
 
@@ -27,15 +27,4 @@ export const chatWithAI = async (query: string, topK: number = 3): Promise<ChatA
     return res.data;
 };
 
-export interface CourseRecommendation {
-    includes(id: string): unknown;
-    id: string;
-    title: string;
-    description: string;
-    score: number;
-}
 
-export interface ChatAIResult {
-    score: number;
-    courses: CourseRecommendation[];
-}

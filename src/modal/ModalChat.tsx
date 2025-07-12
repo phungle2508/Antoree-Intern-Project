@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { chatWithAI, CourseRecommendation } from "../services/aiService"; // Adjust the import path as necessary
+import { chatWithAI } from "../services/aiService"; // Adjust the import path as necessary
+import { CourseRecommendation } from "../types";
 
 interface ModalChatProps {
     open: boolean;
@@ -11,6 +12,7 @@ const ModalChat = ({ open, onClose }: ModalChatProps) => {
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
     const modalRef = useRef<HTMLDivElement>(null);
+    const chatBodyRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!open) return;
@@ -20,6 +22,12 @@ const ModalChat = ({ open, onClose }: ModalChatProps) => {
         document.addEventListener("keydown", handleKeyDown);
         return () => document.removeEventListener("keydown", handleKeyDown);
     }, [open, onClose]);
+
+    useEffect(() => {
+        if (chatBodyRef.current) {
+            chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+        }
+    }, [messages, loading]);
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
@@ -67,8 +75,9 @@ const ModalChat = ({ open, onClose }: ModalChatProps) => {
                 className="bg-white dark:bg-gray-900 rounded-t-2xl shadow-lg flex flex-col
                            w-full max-w-none h-3/4 m-0
                            sm:w-96 sm:max-w-sm sm:h-auto sm:max-h-[80vh] sm:m-4 sm:rounded-2xl
-                           md:w-full md:max-w-sm md:h-auto md:max-h-[70vh] md:m-4 md:rounded-t-2xl"
-                style={{ boxShadow: undefined, borderColor: '#ffc680', borderStyle: 'solid', borderWidth: 2 }}
+                           md:w-full md:max-w-sm md:h-auto md:max-h-[70vh] md:m-4 md:rounded-t-2xl
+                           border-2"
+                style={{ borderColor: '#ffc680', borderStyle: 'solid', boxShadow: undefined }}
                 onMouseDown={e => e.stopPropagation()}
             >
                 {/* Header */}
@@ -94,7 +103,11 @@ const ModalChat = ({ open, onClose }: ModalChatProps) => {
                 </div>
                 
                 {/* Chat Body */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-white dark:bg-gray-900 min-h-0">
+                <div
+                    ref={chatBodyRef}
+                    className="flex-1 overflow-y-auto p-4 space-y-2 bg-white dark:bg-gray-900 min-h-0 flex flex-col"
+                    style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}
+                >
                     {messages.length === 0 && (
                         <div className="text-gray-400 dark:text-gray-500 text-center py-8">
                             <div className="text-sm">Start a conversation!</div>
@@ -132,7 +145,7 @@ const ModalChat = ({ open, onClose }: ModalChatProps) => {
                 
                 {/* Input */}
                 <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800
-                               sm:p-4">
+                               sm:p-4 rounded-b-2xl">
                     <form className="flex gap-2" onSubmit={handleSend}>
                         <input
                             type="text"

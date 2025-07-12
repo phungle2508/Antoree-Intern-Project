@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Trash2, ShoppingCart, Star, Clock, Users, Heart, ChevronDown, ChevronUp } from 'lucide-react';
-import courses from '../../data/courses';
-import { getWishlist, setWishlist, removeWishlistItem, appendCart, getCart } from '../../services/cookie';
+import { courses } from '../../data';
+import { appendCart, getCart } from '../../services/cartService';
+import { getWishlist, removeWishlistItem, setWishlist } from '../../services/wishlistService';
 interface WishlistProps {
   whislist?: string[];
 }

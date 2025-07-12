@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
-import testimonials from '../../data/testimonials';
+import { testimonials } from '../../data';
 const Testimonials = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -55,7 +55,7 @@ const Testimonials = () => {
             <div 
               className="transition-all duration-500 ease-in-out"
               style={{ transform: `translateX(-${activeIndex * 100}%)`, display: 'flex' }}>
-              {testimonials.map((testimonial, index) => (
+              {testimonials.map((testimonial) => (
                 <div 
                   key={testimonial.id} 
                   className="flex-shrink-0 w-full p-8 bg-white dark:bg-gray-800">

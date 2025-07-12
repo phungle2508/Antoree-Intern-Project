@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingCart, Star, Clock, Users, ChevronDown, ChevronUp } from 'lucide-react';
-import courses from '../../data/courses';
-import { getCart, setCart, removeCartItem, updateCartItemQuantity, CartItem } from '../../services/cookie';
+import { courses } from '../../data';
+import { getCart, updateCartItemQuantity, removeCartItem, setCart } from '../../services/cartService';
+import { CartItem } from '../../types';
 
 interface CartProps {
     cart?: CartItem[];

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, CheckCircle, AlertTriangle, Clock, Flag, HelpCircle } from 'lucide-react';
-import courses, { Course, Quiz, Question } from '../data/courses';
+import { courses } from '../data';
+import { Quiz, Course } from '../types';
 
 const QuizPage = () => {
   const { quizId } = useParams<{ quizId: string }>();
-  const navigate = useNavigate();
   
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [course, setCourse] = useState<Course | null>(null);

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
 import { Filter, X, ChevronDown } from 'lucide-react';
-import { Category } from '../../data/category';
+import { Category } from '../../types';
+import { useCourseFilters, FilterState } from '../../hooks/useCourseFilters';
+
 interface CourseFiltersProps {
   categories: Category[];
   levels: string[];
@@ -8,48 +9,16 @@ interface CourseFiltersProps {
   onReset: () => void;
   currentFilters?: FilterState;
 }
-export interface FilterState {
-  category: string;
-  level: string;
-  priceRange: [number, number] | null;
-  sort: string;
-}
+
+
+
 const CourseFilters = ({ categories, levels, onFilterChange, onReset, currentFilters }: CourseFiltersProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [filters, setFilters] = useState<FilterState>({
-    category: '',
-    level: '',
-    priceRange: null,
-    sort: 'popular'
+  const { isOpen, filters, handleFilterChange, resetFilters, toggleFilters } = useCourseFilters({
+    onFilterChange,
+    onReset,
+    currentFilters
   });
-  
-  useEffect(() => {
-    if (currentFilters) {
-      console.log(currentFilters);
-      setFilters(currentFilters);
-    }
-  }, [currentFilters]);
 
-
-  const handleFilterChange = (key: keyof FilterState, value: unknown) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    onFilterChange(newFilters);
-  };
-
-  const resetFilters = () => {
-    const resetState = {
-      category: '',
-      level: '',
-      priceRange: null,
-      sort: 'popular'
-    };
-    setFilters(resetState);
-    onReset();
-  };
-  const toggleFilters = () => {
-    setIsOpen(!isOpen);
-  };
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md mb-6">
       <div className="p-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
@@ -147,4 +116,5 @@ const CourseFilters = ({ categories, levels, onFilterChange, onReset, currentFil
     </div>
   );
 };
+
 export default CourseFilters;

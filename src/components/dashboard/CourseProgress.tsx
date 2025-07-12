@@ -1,7 +1,6 @@
 import { BookOpen, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Course } from '../../data/courses';
-import { Progress } from '../../data/userProgress';
+import { Course, Progress } from '../../types';
 interface CourseProgressProps {
   course: Course;
   progress: Progress;

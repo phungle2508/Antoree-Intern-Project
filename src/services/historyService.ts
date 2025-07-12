@@ -1,26 +1,10 @@
 // History
-import { UserData, Progress, courses } from '../data';
-import { getCookie } from './cookie';
 
-const userData: UserData = {
-    id: "u1",
-    name: "Saket Kumar Sinha",
-    email: "imsaket123@gmail.com",
-    avatarUrl: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
-    enrolledCourses: [],
-    progress: [],
-    certificates: [
-        {
-            id: "cert1",
-            courseId: "c1",
-            courseName: "Complete Python Bootcamp: From Zero to Hero",
-            userName: "Saket Kumar Sinha",
-            issueDate: "2024-03-15",
-            imageUrl: "/certificates/python-certificate.jpg"
-        }
-    ],
-    joinDate: "2024-01-10"
-};
+import { courses, userData } from "../data";
+import { getCookie, setCookie } from "../lib/cookie";
+import { UserData, Progress } from "../types";
+
+
 export function getUserDataFromCookie() {
     const userDataCookie = getCookie('userData');
     if (userDataCookie) {
@@ -31,7 +15,7 @@ export function getUserDataFromCookie() {
             console.error('Error parsing user data from cookie:', error);
         }
     } else {
-        document.cookie = `userData=${encodeURIComponent(JSON.stringify(userData))}; path=/; max-age=604800`; // 7 days expiry
+        setCookie('userData', encodeURIComponent(JSON.stringify(userData)), 7); // 7 days expiry
     }
     // Sort enrolledCourses by progress lastAccessed (most recent first)
 
@@ -65,7 +49,7 @@ export function updateFinishProgressOfUserData(courseId: string, completedLectur
     }
 
     // Save updated user data back to cookie
-    document.cookie = `userData=${encodeURIComponent(JSON.stringify(userData))}; path=/; max-age=604800`; // 7 days expiry
+    setCookie('userData', encodeURIComponent(JSON.stringify(userData)), 7); // 7 days expiry
 
 }
 export function updateProgressOfUserData(courseId: string) {
@@ -89,7 +73,7 @@ export function updateProgressOfUserData(courseId: string) {
     }
 
     // Save updated user data back to cookie
-    document.cookie = `userData=${encodeURIComponent(JSON.stringify(userData))}; path=/; max-age=604800`; // 7 days expiry
+    setCookie('userData', encodeURIComponent(JSON.stringify(userData)), 7); // 7 days expiry
 
 }
 export function calculateOverallProgress(courseId: string, completedLectures: string): number {

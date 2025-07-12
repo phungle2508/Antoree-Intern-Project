@@ -1,32 +1,24 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Bell, ArrowRight, BookOpen, Search, Heart, ShoppingCart, HistoryIcon } from 'lucide-react';
-import CourseProgress from '../components/dashboard/CourseProgress';
-import { getUserDataFromCookie } from '../services/history';
-import courses, { Course } from '../data/courses';
+import { Bell, BookOpen, Search, Heart, ShoppingCart, HistoryIcon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-import { getWishlist, getCart, CartItem } from '../services/cookie';
 import Cart from '../components/dashboard/Cart';
 import Wishlist from '../components/dashboard/Wishlist';
-import { UserData } from '../data';
-import { getRecommendedCourses } from '../services/recomment';
+import { useEffect } from 'react';
+import { useDashboardData } from '../hooks/useDashboardData';
+import ContinueLearning from '../components/dashboard/ContinueLearning';
+import RecommendedCourses from '../components/dashboard/RecommendedCourses';
 
 const Dashboard = () => {
   const { theme, toggleTheme } = useTheme();
 
-  // State for cookie s
-  const [wishlist, setWishlist] = useState<string[]>([]);
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [recommendCourses, setRecommendCourses] = useState<Course[]>([]);
-  const [userData, setUserData] = useState<UserData | null>(getUserDataFromCookie());
+  const {
+    wishlist,
+    cart,
+    recommendCourses,
+    userData,
+    enrolledCourses,
+    updateFromCookie
+  } = useDashboardData();
 
-  // Function to update s from cookies
-  const updateFromCookie = () => {
-    setWishlist(getWishlist() || []);
-    setCart(getCart() || []);
-    setUserData(getUserDataFromCookie() || null);
-
-  };
   // Scroll to top and update title when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -36,18 +28,6 @@ const Dashboard = () => {
     const interval = setInterval(updateFromCookie, 500);
     return () => clearInterval(interval);
   }, []);
-  useEffect(() => {
-    const fetchRecommendedCourses = async () => {
-      const courses = await getRecommendedCourses();
-      setRecommendCourses(courses);
-      console.log(courses);
-    };
-    fetchRecommendedCourses();
-  }, []);
-  const enrolledCourses = courses.filter(course =>
-    userData?.enrolledCourses.includes(course.id)
-  );
-
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -165,110 +145,21 @@ const Dashboard = () => {
           </div>
 
 
-          <div className=" grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className=" lg:grid-cols-4 gap-6 mb-8">
             <Cart cart={cart} />
           </div>
-
-          <div className=" grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Wishlist whislist={wishlist} />
+          <div className=" lg:grid-cols-4 gap-6 mb-8">
+          <Wishlist whislist={wishlist} />
           </div>
 
+          <ContinueLearning
+            enrolledCourses={enrolledCourses}
+            userData={userData}
+          />
 
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Continue Learning</h2>
-              <Link
-                to="/dashboard/courses"
-                className="text-teal-600 dark:text-teal-400 hover:underline flex items-center text-sm font-medium"
-              >
-                View all courses
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...enrolledCourses] // make a shallow copy to avoid mutating the original
-                .sort((a, b) => {
-                  const progressA = userData?.progress.find(p => p.courseId === a.id);
-                  const progressB = userData?.progress.find(p => p.courseId === b.id);
-
-                  const dateA = progressA ? new Date(progressA.lastAccessed).getTime() : 0;
-                  const dateB = progressB ? new Date(progressB.lastAccessed).getTime() : 0;
-
-                  return dateB - dateA; // descending order
-                })
-                .map(course => {
-                  const courseProgress = userData?.progress.find(p => p.courseId === course.id);
-                  if (!courseProgress) return null;
-
-                  return (
-                    <CourseProgress
-                      key={course.id}
-                      course={course}
-                      progress={courseProgress}
-                    />
-                  );
-                })}
-
-            </div>
-          </div>
-
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Recommended for You</h2>
-              <Link
-                to="/courses"
-                className="text-teal-600 dark:text-teal-400 hover:underline flex items-center text-sm font-medium"
-              >
-                Browse all courses
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {recommendCourses
-                .map(course => (
-                  <div key={course.id} className="card group">
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={course.imageUrl}
-                        alt={course.title}
-                        className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute top-3 left-3">
-                        <span className="px-2 py-1 bg-teal-100 text-teal-800 text-xs rounded-md">
-                          {course.category}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <Link to={`/courses/${course.id}`}>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-                          {course.title}
-                        </h3>
-                      </Link>
-                      <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
-                        {course.description}
-                      </p>
-                      <div className="flex justify-between items-center">
-                        <div className="font-bold text-gray-900 dark:text-white">
-                            {typeof course.price === 'number' && course.price > 0
-                            ? `$${course.price.toFixed(2)}`
-                            : 'Free'}
-                        </div>
-                        <Link
-                          to={`/courses/${course.id}`}
-                          className="px-4 py-1.5 text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition-colors"
-                        >
-                          View Course
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              }
-            </div>
-          </div>
+          <RecommendedCourses
+            recommendCourses={recommendCourses}
+          />
 
           <div className="flex justify-center mt-12">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 flex items-center space-x-3">

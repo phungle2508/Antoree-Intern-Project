@@ -1,12 +1,4 @@
-import {
-    Author,
-    Review,
-    LectureItem,
-    Section,
-    Quiz,
-    Question,
-    Course
-} from '../data/index';
+import { Author, Review, LectureItem, Section, Question, Quiz, Course } from "../types";
 
 // Fake data arrays for generation
 const COURSE_TITLES = [

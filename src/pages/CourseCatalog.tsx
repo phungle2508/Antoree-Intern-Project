@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search, BookOpen } from 'lucide-react';
 import CourseCard from '../components/courses/CourseCard';
-import CourseFilters, { FilterState } from '../components/courses/CourseFilters';
-import courses, { Course } from '../data/courses';
-import categoriesInit from '../data/category';
+import CourseFilters from '../components/courses/CourseFilters';
+import { courses, categoriesInit } from '../data';
+import { Course } from '../types';
+import { FilterState } from '../hooks/useCourseFilters';
+import Pagination from '../components/common/Pagination';
 
 const COURSES_PER_PAGE = 6;
 
@@ -132,47 +134,6 @@ const CourseCatalog = () => {
     currentPage * COURSES_PER_PAGE
   );
 
-  // Generate pagination numbers with ellipsis
-  const generatePaginationItems = () => {
-    const items = [];
-    const maxVisiblePages = 5;
-
-    if (totalPages <= maxVisiblePages) {
-      // Show all pages if total is small
-      for (let i = 1; i <= totalPages; i++) {
-        items.push(i);
-      }
-    } else {
-      // Always show first page
-      items.push(1);
-
-      if (currentPage > 3) {
-        items.push('...');
-      }
-
-      // Show pages around current page
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(totalPages - 1, currentPage + 1);
-
-      for (let i = start; i <= end; i++) {
-        if (!items.includes(i)) {
-          items.push(i);
-        }
-      }
-
-      if (currentPage < totalPages - 2) {
-        items.push('...');
-      }
-
-      // Always show last page
-      if (!items.includes(totalPages)) {
-        items.push(totalPages);
-      }
-    }
-
-    return items;
-  };
-
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen pt-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -232,39 +193,11 @@ const CourseCatalog = () => {
               </div>
 
               {/* Pagination Controls */}
-              {totalPages > 1 && (
-                <div className="flex flex-wrap justify-center mt-8 gap-2">
-                  <button
-                    className="btn"
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                  >
-                    Previous
-                  </button>
-                  {generatePaginationItems().map((item, index) => (
-                    item === '...' ? (
-                      <span key={`ellipsis-${index}`} className="flex items-center px-3 py-2 text-gray-500">
-                        ...
-                      </span>
-                    ) : (
-                      <button
-                        key={item}
-                        className={`btn ${currentPage === item ? 'btn-primary' : ''}`}
-                        onClick={() => setCurrentPage(item as number)}
-                      >
-                        {item}
-                      </button>
-                    )
-                  ))}
-                  <button
-                    className="btn"
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
+              <Pagination
+                totalPages={totalPages}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
             </>
           ) : (
             <div className="text-center py-12">

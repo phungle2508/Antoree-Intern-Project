@@ -1,7 +1,9 @@
-import { Course, courses } from "../data";
-import { CourseRecommendation, recommendCoursesBatch } from "./aiService";
-import { getWishlist, getCartItemIds } from "./cookie";
-import { getEnrolledCoursesID } from "./history";
+import { courses } from "../data";
+import { Course, CourseRecommendation } from "../types";
+import { recommendCoursesBatch } from "./aiService";
+import { getCartItemIds } from "./cartService";
+import { getEnrolledCoursesID } from "./historyService";
+import { getWishlist } from "./wishlistService";
 
 export async function getRecommendedCourses(): Promise<Course[]> {
     const enrolledCourses = await getEnrolledCoursesID();
@@ -17,10 +19,10 @@ export async function getRecommendedCourses(): Promise<Course[]> {
 
     // Fetch recommended courses from the AI service, passing excluded IDs
     const recommendedCoursesMap: CourseRecommendation[] = await recommendCoursesBatch(Array.from(excludedCourseIds));
-    
+
     // Extract course IDs from recommendations
     const recommendedCourseIds = new Set(recommendedCoursesMap.map(rec => rec.id));
-    
+
     // Convert to array of Course objects
     const recommendedCourses: Course[] = courses.filter((course: Course) =>
         recommendedCourseIds.has(course.id) && !excludedCourseIds.has(course.id)

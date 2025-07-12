@@ -1,7 +1,7 @@
 import { Star, Users, Clock } from 'lucide-react';
-import { Course } from '../../data/courses';
 import { useState } from 'react';
 import CourseDetail from '../../pages/CourseDetail';
+import { Course } from '../../types';
 
 interface CourseCardProps {
   course: Course;
