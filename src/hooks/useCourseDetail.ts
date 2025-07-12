@@ -26,7 +26,7 @@ export function useCourseDetail(props: { courseId?: string }) {
     if (foundCourse) {
       updateProgressOfUserData(foundCourse?.id);
       setCourse(foundCourse);
-      document.title = `${foundCourse.title} | Saket LearnHub`;
+      document.title = `${foundCourse.title} | LearnHub`;
 
       const foundAuthor = authors.find(a => a.id === foundCourse.authorId);
       if (foundAuthor) {

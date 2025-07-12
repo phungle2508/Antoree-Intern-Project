@@ -39,7 +39,7 @@ const HeroSection = () => {
           <h1
             className={`text-white text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 transition-all duration-700 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
               }`}>
-            Transform Your Learning Journey with Saket LearnHub
+            Transform Your Learning Journey with LearnHub
           </h1>
           <p
             className={`text-gray-100 text-xl md:text-2xl mb-8 transition-all duration-700 delay-300 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'

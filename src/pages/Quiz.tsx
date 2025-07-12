@@ -35,7 +35,7 @@ const QuizPage = () => {
       setQuiz(foundQuiz);
       setCourse(foundCourse);
       setSelectedOptions(new Array(foundQuiz.questions.length).fill(-1));
-      document.title = `${foundQuiz.title} | Saket LearnHub`;
+      document.title = `${foundQuiz.title} | LearnHub`;
     }
 
     setTimeout(() => {

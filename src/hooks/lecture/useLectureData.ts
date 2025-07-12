@@ -17,7 +17,7 @@ export function useLectureData() {
                 const foundLecture = section.lectures.find(l => l.id === lectureId);
                 if (foundLecture) {
                     setLecture(foundLecture);
-                    document.title = `${foundLecture.title} | Saket LearnHub`;
+                    document.title = `${foundLecture.title} | LearnHub`;
                     break;
                 }
             }

@@ -22,7 +22,7 @@ const Dashboard = () => {
   // Scroll to top and update title when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = 'Dashboard | Saket LearnHub';
+    document.title = 'Dashboard | LearnHub';
     updateFromCookie();
     // Poll for cookie changes every 500ms
     const interval = setInterval(updateFromCookie, 500);
@@ -163,9 +163,8 @@ const Dashboard = () => {
 
           <div className="flex justify-center mt-12">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 flex items-center space-x-3">
-              <span className="text-gray-700 dark:text-gray-300">Made by Saket</span>
               <span className="inline-block px-2 py-1 bg-accent-100 text-accent-800 dark:bg-accent-900 dark:text-accent-300 rounded-md text-xs font-medium">
-                Saket LearnHub
+                LearnHub
               </span>
             </div>
           </div>

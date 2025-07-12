@@ -17,7 +17,7 @@ const CallToAction = () => {
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">Start Your Learning Journey Today</h2>
               <p className="text-white/90 text-lg mb-8">
-                Join thousands of students who have already transformed their careers with Saket LearnHub. Get unlimited access to our entire library of courses.
+                Join thousands of students who have already transformed their careers with LearnHub. Get unlimited access to our entire library of courses.
               </p>
               <ul className="space-y-3 mb-8">
                 {benefits.map((benefit, index) => (

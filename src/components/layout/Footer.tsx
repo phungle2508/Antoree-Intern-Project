@@ -9,10 +9,10 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2 lg:col-span-1">
             <div className="flex items-center mb-4">
               <Logo className="h-10 w-10" />
-              <span className="ml-3 text-2xl font-bold">Saket LearnHub</span>
+              <span className="ml-3 text-2xl font-bold">LearnHub</span>
             </div>
             <p className="text-gray-400 mb-4 text-sm leading-relaxed">
-              Saket LearnHub is a modern learning platform offering high-quality, industry-relevant courses to help you
+              LearnHub is a modern learning platform offering high-quality, industry-relevant courses to help you
               stay ahead in the tech world. Whether you're a beginner or a pro, our content is crafted to boost your
               skills and confidence.
             </p>
@@ -42,11 +42,11 @@ const Footer = () => {
             <ul className="space-y-2 text-sm mb-4">
               <li className="flex items-center">
                 <Mail size={16} className="mr-2 text-gray-400" />
-                <a href="mailto:info@saketlearnhub.com" className="text-gray-400 hover:text-white">imsaket123@gmail.com</a>
+                <a href="mailto:ledinhphung25082000p@gmail.com" className="text-gray-400 hover:text-white">ledinhphung25082000p@gmail.com</a>
               </li>
               <li className="flex items-center">
                 <Phone size={16} className="mr-2 text-gray-400" />
-                <a href="tel:+91-916-208-7327" className="text-gray-400 hover:text-white">+91-916-208-7327</a>
+                <a href="tel:+84-038-250-8253" className="text-gray-400 hover:text-white">+84-038-250-8253</a>
               </li>
             </ul>
             <div className="flex space-x-3 mt-4">
@@ -77,7 +77,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-10 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <p className="text-gray-400 text-sm mb-4 md:mb-0">
-              &copy; {new Date().getFullYear()} Saket LearnHub. All rights reserved.
+              &copy; {new Date().getFullYear()} LearnHub. All rights reserved.
             </p>
             <div className="flex space-x-4 text-sm">
               <Link to="#" className="text-gray-400 hover:text-white">Privacy Policy</Link>
@@ -86,7 +86,7 @@ const Footer = () => {
             </div>
           </div>
           <div className="text-center mt-6">
-            <p className="text-gray-400 text-sm">Built with ❤️ by Saket Kumar Sinha</p>
+            <p className="text-gray-400 text-sm">Built with ❤️ </p>
           </div>
         </div>
       </div>

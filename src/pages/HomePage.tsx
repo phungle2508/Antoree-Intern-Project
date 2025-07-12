@@ -11,7 +11,7 @@ const HomePage = () => {
     window.scrollTo(0, 0);
     
     // Update document title
-    document.title = 'Saket LearnHub';
+    document.title = 'LearnHub';
   }, []);
 
   return (

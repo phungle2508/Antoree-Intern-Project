@@ -5,7 +5,7 @@ import Logo from '../components/ui/Logo';
 const SignIn = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = 'Sign In | Saket LearnHub';
+    document.title = 'Sign In | LearnHub';
   }, []);
 
   return (
@@ -15,7 +15,7 @@ const SignIn = () => {
           <Logo className="h-12 w-12" />
         </div>
         <h1 className="mt-3 text-center text-3xl font-bold text-gray-900 dark:text-white">
-          Saket LearnHub
+          LearnHub
         </h1>
         <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
           Sign in to access your courses and continue learning

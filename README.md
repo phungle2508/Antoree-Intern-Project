@@ -1,58 +1,3 @@
-# E-Learning Platform
-
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/language-TypeScript-blue.svg)](https://www.typescriptlang.org/)
-
----
-
-## 🗺️ Workflow Diagram
-
-```mermaid
-flowchart TD
-    A[index.html]
-    A --> B[main.tsx]
-    B --> C[App.tsx]
-    C --> D[ThemeContext Provider]
-    C --> E[React Router]
-    E --> F[Pages]
-    F --> F1[HomePage]
-    F --> F2[CourseCatalog]
-    F --> F3[CourseDetail]
-    F --> F4[Dashboard]
-    F --> F5[Quiz]
-    F --> F6[SignIn/SignUp]
-    F --> F7[VideoLecture]
-    F --> F8[NotFound]
-    F1 --> G[Shared Components]
-    F2 --> G
-    F3 --> G
-    F4 --> G
-    F5 --> G
-    F6 --> G
-    F7 --> G
-    F8 --> G
-    G --> H1[Navbar]
-    G --> H2[Footer]
-    G --> H3[CourseCard]
-    G --> H4[ProgressChart]
-    G --> H5[QuizForm]
-    G --> H6[Other UI]
-    F --> I[Data Modules]
-    I --> J1[courses.ts]
-    I --> J2[userProgress.ts]
-    I --> J3[testimonials.ts]
-    subgraph Build_and_Tooling
-      K1[Vite]
-      K2[TypeScript]
-      K3[Tailwind CSS]
-      K1 --> B
-      K2 --> B
-      K3 --> B
-    end
-```
-
----
-
 ## 📚 Overview
 
 **E-Learning Platform** is a robust and scalable web application providing interactive online learning experiences for students and instructors. Built entirely with TypeScript and modern frontend technologies, this project is a **client-side only** (frontend) application—no backend or server-side code is included.
@@ -61,12 +6,10 @@ flowchart TD
 
 ## ✨ Features
 
-- **User Authentication (Frontend Only):** UI flows for registration and login (no real backend).
 - **Course Management:** Browse, organize, and view courses with modules, lessons, and resources (UI mockups).
-- **Interactive Content:** Support for videos, PDFs, quizzes, and discussion forums (frontend components only).
 - **Progress Tracking:** Visualize student progress and reports (client-side only).
 - **Responsive Design:** Seamless user experience across desktop, tablet, and mobile.
-- **Admin Dashboard:** UI for managing users, courses, and analytics (mocked).
+- **Dashboard:** UI for managing courses, and analytics (mocked).
 
 ---
 
@@ -88,25 +31,32 @@ flowchart TD
 ├── public/
 │   └── index.html
 ├── src/
-│   ├── main.tsx          # Bootstrap app, ReactDOM.render
-│   ├── App.tsx           # Top-level component, routing, context
-│   ├── index.css         # Global styles (Tailwind base)
-│   ├── components/       # Reusable UI components
-│   │   ├── auth/
-│   │   ├── courses/
-│   │   ├── dashboard/
-│   │   ├── home/
-│   │   ├── layout/
-│   │   └── ui/
-│   ├── pages/            # Routed pages (Home, Catalog, Detail, Quiz, Dashboard, Auth, Video, 404)
+│   ├── App.tsx
+│   ├── components/       # Reusable UI components (auth, courses, dashboard, home, layout, lecture, ui)
 │   ├── context/          # React Context providers (Theme, etc.)
 │   ├── data/             # Mock data modules (courses, testimonials, userProgress)
-│   └── types/            # TypeScript interfaces and types
+│   ├── hooks/            # Custom React hooks (dashboard, course, lecture, etc.)
+│   ├── lib/              # Utility libraries (axios, cookie)
+│   ├── modal/            # Modal components (VideoLectureCompletionModal, ModalChat, ModalNote)
+│   ├── pages/            # Routed pages (Home, Catalog, Detail, Quiz, Dashboard, Auth, Video, 404)
+│   ├── services/         # Client-side service modules (cart, wishlist, recommend, ai, history)
+│   ├── types/            # TypeScript interfaces and types
+│   ├── utils/            # Utility functions (autoFakeData)
+│   └── vite-env.d.ts
+├── public/
+│   └── images/
+├── ai/                   # AI scripts and data (cli.txt, course.json, recommend_courses.py)
+├── dist/                 # Build output (assets, images, index.html, logo.svg)
+├── node_modules/         # Project dependencies
 ├── package.json
-├── tsconfig.json
-├── vite.config.ts
+├── package-lock.json
 ├── postcss.config.js
 ├── tailwind.config.js
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+├── vite.config.ts
+├── LICENSE
 └── README.md
 ```
 
@@ -122,65 +72,37 @@ flowchart TD
 ### Installation
 
 1. **Clone the repository:**
+
    ```bash
-   git clone https://github.com/sinha-19/E-Learning-Platform.git
-   cd E-Learning-Platform
+   git clone https://github.com/shegga9x/Antoree-Intern-Project.git
+   cd Antoree-Intern-Project
    ```
 
 2. **Install dependencies:**
+
    ```bash
    npm install
-   # or
-   yarn install
+
    ```
 
-3. **Run the application:**
+3. **Set up environment variables:**
+
+   Copy the example environment file and update values as needed:
+
    ```bash
-   npm start
-   # or
-   yarn start
+   cp .env.example .env
+   # Edit .env to configure environment variables if required
    ```
 
-4. **Open in your browser:**
-   - Visit [http://localhost:3000](http://localhost:3000) (or the port shown in your terminal).
+4. **Run the application:**
 
----
+   ```bash
+   npm run dev
+   ```
 
-## 🛤️ Application Flow
+### AI
 
-1. User visits the site (`index.html` → `main.tsx` → `App.tsx`).
-2. The `ThemeContext` provider injects theme state (light/dark) into all components.
-3. `App.tsx` sets up `React Router` for SPA navigation.
-4. Pages (Home, Catalog, Detail, Dashboard, Quiz, Auth, Video, NotFound) are rendered based on route.
-5. Pages and components import mock data modules from `/src/data`.
-6. All UI is responsive and styled with Tailwind CSS, with global theme and state managed by context.
-7. The build system (Vite, TypeScript, Tailwind) compiles and bundles everything for local dev or production.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please open issues and submit pull requests for improvements or bug fixes.
-
-1. Fork the repository.
-2. Create a new branch for your feature or bugfix.
-3. Commit your changes and push to your fork.
-4. Open a pull request with a detailed description.
-
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-## 📬 Contact
-
-For questions, suggestions, or support, please open an issue or contact the repository owner:
-
-- **GitHub:** [sinha-19](https://github.com/sinha-19)
-
----
-
-*Empowering education through technology.*
+The `ai/` folder contains scripts and data for generating course recommendations using machine learning models.  
+- It is deployed on a VPS with [sentence-transformers/all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) to embed about 50 course objects.
+- The AI service can recommend similar courses based on embeddings, but does **not** support general conversation or chat.
+- This is used for demo and development purposes only; it is not required for running the frontend app.

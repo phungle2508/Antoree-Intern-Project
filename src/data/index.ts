@@ -7,7 +7,7 @@ export const testimonials: Testimonial[] = [
     role: "Software Engineer",
     company: "Highradius",
     avatarUrl: "/images/Pritish.png",
-    content: "Saket LearnHub has completely transformed my career. I went from a junior developer to a team lead in just 8 months after completing their React and Node.js courses. The quality of instruction and hands-on projects are unmatched.",
+    content: "LearnHub has completely transformed my career. I went from a junior developer to a team lead in just 8 months after completing their React and Node.js courses. The quality of instruction and hands-on projects are unmatched.",
     rating: 5
   },
   {
@@ -16,7 +16,7 @@ export const testimonials: Testimonial[] = [
     role: "UX Designer",
     company: "IBM",
     avatarUrl: "/images/saptarshi.png",
-    content: "As someone with no prior design experience, I was intimidated to start learning UX design. The UI/UX Design Masterclass on Saket LearnHub made complex concepts accessible and helped me build a portfolio that landed me my dream job.",
+    content: "As someone with no prior design experience, I was intimidated to start learning UX design. The UI/UX Design Masterclass on LearnHub made complex concepts accessible and helped me build a portfolio that landed me my dream job.",
     rating: 5
   },
   {
@@ -34,7 +34,7 @@ export const testimonials: Testimonial[] = [
     role: "Full Stack Developer",
     company: "Meta",
     avatarUrl: "/images/aditya.jpg",
-    content: "I've tried many online learning platforms, but Saket LearnHub stands out for the depth of content and instructor quality. The Python bootcamp helped me automate tasks at work, saving my team countless hours.",
+    content: "I've tried many online learning platforms, but LearnHub stands out for the depth of content and instructor quality. The Python bootcamp helped me automate tasks at work, saving my team countless hours.",
     rating: 4
   },
   {
@@ -49,11 +49,11 @@ export const testimonials: Testimonial[] = [
   ,
   {
     id: "t6",
-    name: "Saket Kumar Sinha",
+    name: "Kumar Sinha",
     role: "Founder & CEO",
-    company: "Saket LearnHub",
+    company: "LearnHub",
     avatarUrl: "/images/saket.jpg",
-    content: "As the founder of Saket LearnHub, I am passionate about making quality education accessible to everyone. Our platform is built on the belief that with the right guidance and resources, anyone can achieve their learning goals.",
+    content: "As the founder of LearnHub, I am passionate about making quality education accessible to everyone. Our platform is built on the belief that with the right guidance and resources, anyone can achieve their learning goals.",
     rating: 5
   }
 ];
@@ -23348,8 +23348,8 @@ export const categoriesInit: Category[] = [
 ];
 export const userData: UserData = {
     id: "u1",
-    name: "Saket Kumar Sinha",
-    email: "imsaket123@gmail.com",
+    name: "Phung Le",
+    email: "ledinhphung25082000p@gmail.com",
     avatarUrl: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
     enrolledCourses: [],
     progress: [],
@@ -23358,7 +23358,7 @@ export const userData: UserData = {
             id: "cert1",
             courseId: "c1",
             courseName: "Complete Python Bootcamp: From Zero to Hero",
-            userName: "Saket Kumar Sinha",
+            userName: "shegga",
             issueDate: "2024-03-15",
             imageUrl: "/certificates/python-certificate.jpg"
         }

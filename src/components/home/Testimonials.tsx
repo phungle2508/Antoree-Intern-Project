@@ -30,7 +30,7 @@ const Testimonials = () => {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">What Our Students Say</h2>
           <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Hear from our students about how Saket LearnHub has helped them achieve their learning goals
+            Hear from our students about how LearnHub has helped them achieve their learning goals
           </p>
         </div>
 

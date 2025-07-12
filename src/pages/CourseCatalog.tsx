@@ -26,7 +26,7 @@ const CourseCatalog = () => {
   const levels = ['All', ...Array.from(new Set(courses.map(course => course.level)))];
 
   useEffect(() => {
-    document.title = 'Course Catalog | Saket LearnHub';
+    document.title = 'Course Catalog | LearnHub';
 
     const categoryParam = searchParams.get('category');
     const levelParam = searchParams.get('level');

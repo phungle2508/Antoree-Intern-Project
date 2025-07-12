@@ -37,7 +37,7 @@ const Navbar = () => {
             <Link to="/" className="flex items-center" onClick={closeMenu}>
               <Logo />
               <span className={`ml-2 text-xl font-bold ${isHomePage && !isScrolled ? 'text-white' : 'text-gray-900 dark:text-white'}`}>
-                Saket LearnHub
+                LearnHub
               </span>
             </Link>
           </div>
