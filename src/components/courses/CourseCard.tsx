@@ -1,6 +1,6 @@
 import { Star, Users, Clock } from 'lucide-react';
 import { useState } from 'react';
-import CourseDetail from '../../pages/CourseDetail';
+import { useCourseDetailModal } from '../../hooks/useCourseDetailModal';
 import { Course } from '../../types';
 
 interface CourseCardProps {
@@ -29,8 +29,13 @@ const CourseCard = ({ course, size = 'medium' }: CourseCardProps) => {
     }
   };
   const config = sizesConfig[size];
-  const [showModal, setShowModal] = useState(false);
   const [imageLoadStates, setImageLoadStates] = useState<{ [key: string]: boolean }>({});
+
+  // Use shared modal hook
+  const {
+    openModal,
+    ModalContent,
+  } = useCourseDetailModal();
 
   const handleImageLoad = (imageId: string) => {
     setImageLoadStates(prev => ({
@@ -101,40 +106,13 @@ const CourseCard = ({ course, size = 'medium' }: CourseCardProps) => {
 
           <button
             className="btn bg-indigo-600 hover:bg-indigo-700 text-sm py-1.5"
-            onClick={() => {
-              setShowModal(true);
-            }} >
+            onClick={() => openModal(course.id)}
+          >
             View Course
           </button>
         </div>
       </div>
-      {/* Modal for CourseDetail - Responsive */}
-      {
-        showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-2 sm:p-4">
-            <div className="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg 
-                           w-full h-full max-h-full
-                           sm:w-full sm:max-w-2xl sm:h-[85vh] sm:max-h-[85vh]
-                           md:max-w-3xl md:h-[90vh] md:max-h-[90vh]
-                           lg:max-w-4xl lg:h-[90vh] lg:max-h-[90vh]
-                           xl:max-w-5xl
-                           overflow-hidden flex flex-col">
-              <button
-                className="absolute top-2 right-2 z-10 text-gray-500 hover:text-gray-800 dark:hover:text-white 
-                          text-xl sm:text-2xl bg-white dark:bg-gray-800 rounded-full w-8 h-8 sm:w-10 sm:h-10 
-                          flex items-center justify-center shadow-md hover:shadow-lg transition-all"
-                onClick={() => setShowModal(false)}
-              >
-                ×
-              </button>
-              <div className="flex-1 overflow-y-auto">
-                <CourseDetail courseId={course.id} modalMode onClose={() => setShowModal(false)} />
-              </div>
-            </div>
-          </div>
-        )
-      }
-
+      {ModalContent}
     </div >
   );
 };

@@ -3,7 +3,7 @@ import {
   AlertTriangle,
   ArrowLeft
 } from 'lucide-react';
-import CourseDetailModal from '../components/courses/CourseDetailModal';
+import ModalCourseDetail from '../modal/ModalCourseDetail';
 import CourseDetailHeader from '../components/courses/CourseDetailHeader';
 import CourseDetailTabs from '../components/courses/CourseDetailTabs';
 
@@ -35,7 +35,7 @@ const CourseDetail = (props: CourseDetailProps) => {
 
   if (props.modalMode) {
     return (
-      <CourseDetailModal
+      <ModalCourseDetail
         course={course}
         author={author}
         loading={loading}

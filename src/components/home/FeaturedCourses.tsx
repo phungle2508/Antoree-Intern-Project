@@ -1,48 +1,45 @@
-import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
-import CourseDetail from '../../pages/CourseDetail';
+import { useCourseDetailModal } from '../../hooks/useCourseDetailModal';
+import { useCourseSlider } from '../../hooks/useCourseSlider';
 import { courses } from '../../data';
+import { useEffect, useState } from 'react';
 import { Course } from '../../types';
+
 const FeaturedCourses = () => {
-  const [visibleCourses, setVisibleCourses] = useState<Course[]>([]);
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedCourseId, setSelectedCourseId] = useState<string>('');
-  const [imageLoadStates, setImageLoadStates] = useState<{ [key: string]: boolean }>({});
+  // Use useCourseSlider for slider logic
+  const [featuredCourses, setFeaturedCourses] = useState<Course[]>([]);
   useEffect(() => {
     const featuredCourses = courses.filter(course => course.isFeatured);
-    setVisibleCourses(featuredCourses);
+    setFeaturedCourses(featuredCourses);
   }, []);
-  const checkScrollButtons = () => {
-    if (sliderRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-    }
-  };
-  useEffect(() => {
-    const slider = sliderRef.current;
-    if (slider) {
-      slider.addEventListener('scroll', checkScrollButtons);
-      checkScrollButtons();
-      return () => {
-        slider.removeEventListener('scroll', checkScrollButtons);
-      };
-    }
-  }, [visibleCourses]);
-  const scroll = (direction: 'left' | 'right') => {
-    if (sliderRef.current) {
-      const { clientWidth } = sliderRef.current;
-      const scrollAmount = direction === 'left' ? -clientWidth / 2 : clientWidth / 2;
-      sliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
-  const handleImageLoad = (courseId: string) => {
-    setImageLoadStates(prev => ({ ...prev, [courseId]: true }));
-  };
+  const {
+    visibleCourses,
+    sliderRef,
+    canScrollLeft,
+    canScrollRight,
+    imageLoadStates,
+    handleImageLoad,
+    scroll,
+  } = useCourseSlider(true, featuredCourses);
+
+  // Use shared modal hook
+  const {
+    openModal,
+    ModalContent,
+  } = useCourseDetailModal();
+
+  // Show loading spinner while featuredCourses are loading
+  if (!featuredCourses.length) {
+    return (
+      <section className="py-16 bg-gray-50 dark:bg-gray-900 flex items-center justify-center min-h-[300px]">
+        <div className="flex items-center justify-center w-full">
+          <div className="w-12 h-12 border-t-4 border-orange-500 border-solid rounded-full animate-spin"></div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-16 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -126,13 +123,9 @@ const FeaturedCourses = () => {
                       </div>
                       <button
                         className="btn bg-orange-500 hover:bg-orange-600 text-sm py-1.5"
-                        onClick={() => {
-                          setSelectedCourseId(course.id);
-                          setShowModal(true);
-                          
-                        }} >
+                        onClick={() => openModal(course.id)}
+                      >
                         View Course
-
                       </button>
                     </div>
                   </div>
@@ -140,28 +133,7 @@ const FeaturedCourses = () => {
               </div>
             ))}
           </div>
-
-          {/* Modal for CourseDetail - moved outside the map */}
-          {showModal && selectedCourseId && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent">
-              <div className="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg max-w-4xl w-full h-[90vh] overflow-y-auto p-4">
-                <button
-                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 dark:hover:text-white text-2xl"
-                  onClick={() => {
-                    setShowModal(false);
-                    setSelectedCourseId('');
-                  }}
-                >
-                  ×
-                </button>
-                <CourseDetail courseId={selectedCourseId} modalMode onClose={() => {
-                  setShowModal(false);
-                  setSelectedCourseId('');
-                }} />
-              </div>
-            </div>
-          )}
-
+          {ModalContent}
           <button
             className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-gray-800 rounded-full p-2 shadow-lg ${!canScrollRight ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-100 dark:hover:bg-orange-700'}`}
             onClick={() => scroll('right')}

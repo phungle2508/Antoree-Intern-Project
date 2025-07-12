@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import CourseProgress from './CourseProgress';
 import { Course, UserData } from '../../types';
 
@@ -52,13 +51,7 @@ const ContinueLearning = ({ enrolledCourses, userData }: ContinueLearningProps) 
     <div className="mb-8">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white">Continue Learning</h2>
-        <Link
-          to="/dashboard/courses"
-          className="text-teal-600 dark:text-teal-400 hover:underline flex items-center text-sm font-medium"
-        >
-          View all courses
-          <ArrowRight className="ml-1 h-4 w-4" />
-        </Link>
+
       </div>
       <div className="relative">
         <button

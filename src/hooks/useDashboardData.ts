@@ -24,13 +24,13 @@ export function useDashboardData() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const fetchRecommendedCourses = async () => {
-      const courses = await getRecommendedCourses();
-      setRecommendCourses(courses);
-    };
-    fetchRecommendedCourses();
-  }, []);
+useEffect(() => {
+  const fetchRecommendedCourses = async () => {
+    const courses = await getRecommendedCourses();
+    setRecommendCourses(courses);
+  };
+  fetchRecommendedCourses();
+}, []);
 
   const enrolledCourses = courses.filter(course =>
     userData?.enrolledCourses.includes(course.id)

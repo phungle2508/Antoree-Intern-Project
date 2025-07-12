@@ -1,10 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ArrowRight } from 'lucide-react';
+import { Search, ArrowRight, Brain } from 'lucide-react';
+import ModalRecommend from '../../modal/ModalRecommend';
+import { useCourseDetailModal } from '../../hooks/useCourseDetailModal';
+
 const HeroSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showRecommendModal, setShowRecommendModal] = useState(false);
   const navigate = useNavigate();
+
+  const {
+    ModalContent,
+  } = useCourseDetailModal();
 
   useEffect(() => {
     setIsVisible(true);
@@ -76,8 +84,16 @@ const HeroSection = () => {
               Browse Courses
               <ArrowRight size={18} className="ml-2" />
             </Link>
-
+            <button
+              type="button"
+              className="btn bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center"
+              onClick={() => setShowRecommendModal(true)}
+            >
+              Recommend
+              <Brain size={18} className="ml-2" />
+            </button>
           </div>
+
           <div
             className={`mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 transition-all duration-700 delay-900 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
               }`}
@@ -116,6 +132,12 @@ const HeroSection = () => {
           ></path>
         </svg>
       </div>
+      {showRecommendModal && (
+        <ModalRecommend open={showRecommendModal} onClose={() => setShowRecommendModal(false)} />
+      )}
+      {ModalContent}
+      {/* Modal for CourseDetail - moved outside the map */}
+
     </div>
   );
 };

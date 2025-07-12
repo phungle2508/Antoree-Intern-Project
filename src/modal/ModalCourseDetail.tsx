@@ -9,9 +9,10 @@ import {
   AlertTriangle,
   ArrowLeft
 } from 'lucide-react';
-import { Course, Author, Section } from '../../types';
+import { Course, Author, Section } from '../types';
+import { useNavigate } from 'react-router-dom';
 
-interface CourseDetailModalProps {
+interface ModalCourseDetailProps {
   course: Course | null;
   author: Author | null;
   loading: boolean;
@@ -30,7 +31,7 @@ interface CourseDetailModalProps {
   onClose?: () => void;
 }
 
-const CourseDetailModal = ({
+const ModalCourseDetail = ({
   course,
   author,
   loading,
@@ -45,21 +46,23 @@ const CourseDetailModal = ({
   handleAddToCart,
   handleWishlistToggle,
   onClose
-}: CourseDetailModalProps) => {
+}: ModalCourseDetailProps) => {
+  const navigate = useNavigate();
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
-        <div className="w-16 h-16 border-t-4 border-primary-500 border-solid rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center min-h-[40vh] sm:min-h-[60vh] bg-gray-50 dark:bg-gray-900 pt-8 sm:pt-16">
+        <div className="w-12 h-12 sm:w-16 sm:h-16 border-t-4 border-primary-500 border-solid rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (!course) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 pt-16 px-4">
-        <AlertTriangle size={64} className="text-warning-500 mb-4" />
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Course Not Found</h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-6 text-center">
+      <div className="flex flex-col items-center justify-center min-h-[40vh] sm:min-h-[60vh] bg-gray-50 dark:bg-gray-900 pt-8 sm:pt-16 px-2 sm:px-4">
+        <AlertTriangle size={48} className="sm:size-64 text-warning-500 mb-4" />
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">Course Not Found</h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-6 text-center text-sm sm:text-base">
           The course you're looking for doesn't exist or has been removed.
         </p>
         <button
@@ -74,10 +77,16 @@ const CourseDetailModal = ({
   }
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-lg px-2 py-4 max-h-[60vh] overflow-y-auto">
+    <div className=" bg-white dark:bg-gray-900 rounded-lg px-1 sm:px-2 py-2 sm:py-4 max-h-[80vh] sm:max-h-[60vh] overflow-y-auto w-full max-w-full">
       {/* Tabs - Mobile Responsive */}
+      <button
+        className="btn btn-secondary w-full flex items-center justify-center min-h-[40px]  text-sm mt-2"
+        onClick={() => navigate(`/courses/${course.id}`)}
+      >
+        Go to Course
+      </button>
       <div className="border-b border-gray-200 dark:border-gray-700 mb-4">
-        <nav className="flex space-x-4 overflow-x-auto">
+        <nav className="flex space-x-2 sm:space-x-4 overflow-x-auto">
           <button
             onClick={() => setActiveTab('overview')}
             className={`py-2 px-3 font-medium text-sm border-b-2 whitespace-nowrap ${activeTab === 'overview'
@@ -110,10 +119,11 @@ const CourseDetailModal = ({
 
       {/* Tab Content - Responsive */}
       <div>
+
         {/* Overview Tab */}
         {activeTab === 'overview' && (
           <div className="space-y-4">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4">
               <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-3">About This Course</h2>
               <p className="text-gray-700 dark:text-gray-300 mb-4 text-sm whitespace-pre-line">
                 {course.longDescription}
@@ -151,7 +161,7 @@ const CourseDetailModal = ({
             </div>
 
             {author && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4">
                 <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-3">Instructor</h2>
                 <div className="flex items-start">
                   <img
@@ -169,7 +179,7 @@ const CourseDetailModal = ({
             )}
 
             {/* Action Buttons in Modal */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4">
               <div className="space-y-3">
                 <button
                   className="btn btn-primary w-full flex items-center justify-center min-h-[40px] text-sm"
@@ -217,7 +227,7 @@ const CourseDetailModal = ({
 
         {/* Curriculum Tab - Responsive */}
         {activeTab === 'curriculum' && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4">
             <div className="mb-4">
               <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Course Curriculum</h2>
               <div className="text-xs text-gray-600 dark:text-gray-400">
@@ -281,7 +291,7 @@ const CourseDetailModal = ({
 
         {/* Reviews Tab - Responsive */}
         {activeTab === 'reviews' && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-4">
             <div className="mb-4">
               <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg mb-4">
                 <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
@@ -352,4 +362,4 @@ const CourseDetailModal = ({
   );
 };
 
-export default CourseDetailModal;
+export default ModalCourseDetail;

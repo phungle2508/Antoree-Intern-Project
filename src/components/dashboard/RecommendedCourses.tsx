@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
 import { Course } from '../../types';
 
 interface RecommendedCoursesProps {
@@ -10,13 +9,7 @@ const RecommendedCourses = ({ recommendCourses }: RecommendedCoursesProps) => (
   <div>
     <div className="flex items-center justify-between mb-6">
       <h2 className="text-xl font-bold text-gray-900 dark:text-white">Recommended for You</h2>
-      <Link
-        to="/courses"
-        className="text-teal-600 dark:text-teal-400 hover:underline flex items-center text-sm font-medium"
-      >
-        Browse all courses
-        <ArrowRight className="ml-1 h-4 w-4" />
-      </Link>
+
     </div>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {recommendCourses.map(course => (

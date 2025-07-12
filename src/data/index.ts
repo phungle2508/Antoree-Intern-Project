@@ -23348,7 +23348,7 @@ export const categoriesInit: Category[] = [
 ];
 export const userData: UserData = {
     id: "u1",
-    name: "Phung Le",
+    name: "PhungLe",
     email: "ledinhphung25082000p@gmail.com",
     avatarUrl: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
     enrolledCourses: [],

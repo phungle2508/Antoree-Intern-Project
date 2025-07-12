@@ -1,6 +1,8 @@
+I use template from https://github.com/sinha-19/E-Learning-Platform
+
 ## 📚 Overview
 
-**E-Learning Platform** is a robust and scalable web application providing interactive online learning experiences for students and instructors. Built entirely with TypeScript and modern frontend technologies, this project is a **client-side only** (frontend) application—no backend or server-side code is included.
+**E-Learning Platform** is a robust, modern web application for interactive online learning. Built entirely with TypeScript and the latest frontend technologies, this project is **client-side only**—no backend or server-side code is included.
 
 ---
 
@@ -9,7 +11,8 @@
 - **Course Management:** Browse, organize, and view courses with modules, lessons, and resources (UI mockups).
 - **Progress Tracking:** Visualize student progress and reports (client-side only).
 - **Responsive Design:** Seamless user experience across desktop, tablet, and mobile.
-- **Dashboard:** UI for managing courses, and analytics (mocked).
+- **Dashboard:** UI for managing courses and analytics (mocked).
+- **AI Recommendations:** (Optional) Recommend similar courses using embeddings (see `ai/` folder).
 
 ---
 
@@ -45,7 +48,7 @@
 │   └── vite-env.d.ts
 ├── public/
 │   └── images/
-├── ai/                   # AI scripts and data (cli.txt, course.json, recommend_courses.py)
+├── ai/                   # AI scripts and data (see below)
 ├── dist/                 # Build output (assets, images, index.html, logo.svg)
 ├── node_modules/         # Project dependencies
 ├── package.json
@@ -82,10 +85,11 @@
 
    ```bash
    npm install
-
+   # or
+   yarn install
    ```
 
-3. **Set up environment variables:**
+3. **Set up environment variables (optional):**
 
    Copy the example environment file and update values as needed:
 
@@ -98,11 +102,26 @@
 
    ```bash
    npm run dev
+   # or
+   yarn dev
    ```
 
-### AI
+---
 
-The `ai/` folder contains scripts and data for generating course recommendations using machine learning models.  
-- It is deployed on a VPS with [sentence-transformers/all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) to embed about 50 course objects.
+### 🤖 AI Folder
+
+The `ai/` folder contains scripts and data for generating course recommendations using machine learning models.
+
+- Deployed on a VPS with [sentence-transformers/all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) to embed about 50 course objects.
 - The AI service can recommend similar courses based on embeddings, but does **not** support general conversation or chat.
-- This is used for demo and development purposes only; it is not required for running the frontend app.
+- This is for demo/development only; it is **not required** to run the frontend app.
+
+---
+
+## 📬 Contact
+
+For questions, suggestions, or support, please open an issue or contact the repository owner.
+
+---
+
+_Empowering education through technology._

@@ -15,7 +15,7 @@ export function getUserDataFromCookie() {
             console.error('Error parsing user data from cookie:', error);
         }
     } else {
-        setCookie('userData', encodeURIComponent(JSON.stringify(userData)), 7); // 7 days expiry
+        setCookie('userData', (JSON.stringify(userData)), 7); // 7 days expiry
     }
     // Sort enrolledCourses by progress lastAccessed (most recent first)
 
@@ -49,7 +49,7 @@ export function updateFinishProgressOfUserData(courseId: string, completedLectur
     }
 
     // Save updated user data back to cookie
-    setCookie('userData', encodeURIComponent(JSON.stringify(userData)), 7); // 7 days expiry
+    setCookie('userData', (JSON.stringify(userData)), 7); // 7 days expiry
 
 }
 export function updateProgressOfUserData(courseId: string) {
@@ -73,7 +73,7 @@ export function updateProgressOfUserData(courseId: string) {
     }
 
     // Save updated user data back to cookie
-    setCookie('userData', encodeURIComponent(JSON.stringify(userData)), 7); // 7 days expiry
+    setCookie('userData', (JSON.stringify(userData)), 7); // 7 days expiry
 
 }
 export function calculateOverallProgress(courseId: string, completedLectures: string): number {
