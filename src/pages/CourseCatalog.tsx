@@ -183,13 +183,13 @@ const CourseCatalog = () => {
           ) : filteredCourses.length > 0 ? (
             <>
               <p className="text-gray-600 dark:text-gray-400 mb-6 text-center sm:text-left">
-              Showing {paginatedCourses.length} of {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
+                Showing {paginatedCourses.length} of {filteredCourses.length} {filteredCourses.length === 1 ? 'course' : 'courses'}
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-              {paginatedCourses.map(course => (
-                <CourseCard key={course.id} course={course} />
-              ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-6">
+                {paginatedCourses.map(course => (
+                  <CourseCard key={course.id} course={course} />
+                ))}
               </div>
 
               {/* Pagination Controls */}
