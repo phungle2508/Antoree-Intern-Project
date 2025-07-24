@@ -22,5 +22,6 @@ dist-ssr
 *.sln
 *.sw?
 .env
-./ai/.venv
-./ai/__pycache__
+ai/.venv
+ai/__pycache__
+
